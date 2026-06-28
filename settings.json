@@ -1,0 +1,7 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "PATH=\"$HOME/.local/bin:$PATH\" ~/.claude/statusline.sh"
+  },
+  "theme": "dark"
+}
