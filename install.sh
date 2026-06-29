@@ -11,6 +11,7 @@ declare -A FILES=(
   ["settings.json"]="settings.json"
   ["statusline.sh"]="statusline.sh"
   ["skills/sync-claude.md"]="skills/sync-claude.md"
+  ["skills/commit-and-push/SKILL.md"]="skills/commit-and-push/SKILL.md"
 )
 
 echo "==> Installing claude.me config from $REPO_DIR"
@@ -22,6 +23,7 @@ if grep -qi microsoft /proc/version 2>/dev/null; then
 fi
 
 mkdir -p "$CLAUDE_DIR/skills"
+mkdir -p "$CLAUDE_DIR/skills/commit-and-push"
 
 # Returns true if $1 is a symlink whose target lives inside $REPO_DIR
 _is_our_symlink() {

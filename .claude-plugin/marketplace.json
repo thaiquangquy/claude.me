@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "thaiquangquy-skills",
+  "owner": { "name": "thaiquangquy" },
+  "metadata": { "description": "Personal Claude Code skills by thaiquangquy" },
+  "plugins": [
+    {
+      "name": "personal-skills",
+      "source": "./",
+      "description": "Personal Claude Code skill bundle",
+      "category": "development"
+    }
+  ]
+}

@@ -1,7 +1,22 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "PATH=\"$HOME/.local/bin:$PATH\" ~/.claude/statusline.sh"
+    "command": "~/.claude/statusline.sh"
   },
-  "theme": "dark"
+  "extraKnownMarketplaces": {
+    "claude-pace-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "Astro-Han/claude-pace"
+      }
+    },
+    "thaiquangquy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "thaiquangquy/claude.me"
+      }
+    }
+  },
+  "theme": "dark",
+  "tui": "fullscreen"
 }

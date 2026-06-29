@@ -1,0 +1,9 @@
+{
+  "name": "personal-skills",
+  "description": "Personal Claude Code skills — commit-and-push with conventional commits, JIRA extraction, and PR link recovery",
+  "author": { "name": "thaiquangquy" },
+  "strict": false,
+  "skills": [
+    "./skills/commit-and-push"
+  ]
+}

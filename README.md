@@ -7,9 +7,33 @@ Portable Claude Code configuration — global CLAUDE.md, settings, statusline, a
 | File | Destination | Purpose |
 |------|-------------|---------|
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` | Global instructions for Claude (plan format, preferences) |
-| `settings.json` | `~/.claude/settings.json` | Theme, statusline command, and other settings |
+| `settings.json` | `~/.claude/settings.json` | Theme, statusline command, marketplace registrations |
 | `statusline.sh` | `~/.claude/statusline.sh` | Custom statusline: model, context %, git info, rate limits |
 | `skills/sync-claude.md` | `~/.claude/skills/sync-claude.md` | `/sync-claude` skill to pull & reinstall |
+| `skills/commit-and-push/SKILL.md` | `~/.claude/skills/commit-and-push/SKILL.md` | `/commit-and-push` skill with conventional commits and PR link |
+
+## Marketplace
+
+This repo doubles as a Claude Code plugin marketplace (`thaiquangquy-skills`). The `settings.json` installed by this repo already registers the marketplace. On any machine after running `install.sh`, install the skill bundle with:
+
+```
+/plugin install personal-skills@thaiquangquy-skills
+```
+
+To register the marketplace manually (if you manage `settings.json` separately), add to `~/.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "thaiquangquy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "thaiquangquy/claude.me"
+      }
+    }
+  }
+}
+```
 
 ## First-time setup (new machine)
 
