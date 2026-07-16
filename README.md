@@ -11,6 +11,7 @@ Portable Claude Code configuration — global CLAUDE.md, settings, statusline, a
 | `statusline.sh` | `~/.claude/statusline.sh` | Custom statusline: model, context %, git info, rate limits |
 | `skills/sync-claude.md` | `~/.claude/skills/sync-claude.md` | `/sync-claude` skill to pull & reinstall |
 | `skills/commit-and-push/SKILL.md` | `~/.claude/skills/commit-and-push/SKILL.md` | `/commit-and-push` skill with conventional commits and PR link |
+| `skills/create-readme/SKILL.md` | `~/.claude/skills/create-readme/SKILL.md` | `/create-readme` skill — generates README.md (banesullivan template) plus a companion DEVELOPMENT.md for dev/contributor instructions, from evidenced project facts |
 
 ## Marketplace
 

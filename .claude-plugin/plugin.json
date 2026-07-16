@@ -1,9 +1,10 @@
 {
   "name": "personal-skills",
-  "description": "Personal Claude Code skills — commit-and-push with conventional commits, JIRA extraction, and PR link recovery",
+  "description": "Personal Claude Code skills — commit-and-push with conventional commits, JIRA extraction, and PR link recovery; create-readme for generating a README.md and companion DEVELOPMENT.md from evidenced project facts",
   "author": { "name": "thaiquangquy" },
   "strict": false,
   "skills": [
-    "./skills/commit-and-push"
+    "./skills/commit-and-push",
+    "./skills/create-readme"
   ]
 }
