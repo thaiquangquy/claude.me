@@ -66,22 +66,25 @@ _show_diff() {
 
 # Prompts user for conflict resolution. Defaults to 's' (skip) when non-interactive.
 # Echoes the chosen letter: s, o, or a
+# Note: called as `choice=$(_prompt_conflict)`, so only the final s/o/a echo
+# may go to stdout — every informational line must go to stderr (>&2), or it
+# gets swallowed into $choice instead of being shown to the user.
 _prompt_conflict() {
   if [ ! -t 0 ]; then
-    echo "    [non-interactive] defaulting to skip"
+    echo "    [non-interactive] defaulting to skip" >&2
     echo "s"
     return
   fi
   local choice
   while true; do
-    printf "    Conflict: [s]kip  [o]verride (symlink)  [a]ppend (keep local + add repo at end): "
+    printf "    Conflict: [s]kip  [o]verride (symlink)  [a]ppend (keep local + add repo at end): " >&2
     read -r -n 1 choice </dev/tty
-    echo
+    echo >&2
     case "$choice" in
       s|S) echo "s"; return ;;
       o|O) echo "o"; return ;;
       a|A) echo "a"; return ;;
-      *) echo "    Please enter s, o, or a." ;;
+      *) echo "    Please enter s, o, or a." >&2 ;;
     esac
   done
 }
