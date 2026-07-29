@@ -12,6 +12,14 @@ Portable Claude Code configuration — global CLAUDE.md, settings, statusline, a
 | `skills/sync-claude.md` | `~/.claude/skills/sync-claude.md` | `/sync-claude` skill to pull & reinstall |
 | `skills/commit-and-push/SKILL.md` | `~/.claude/skills/commit-and-push/SKILL.md` | `/commit-and-push` skill with conventional commits and PR link |
 | `skills/create-readme/SKILL.md` | `~/.claude/skills/create-readme/SKILL.md` | `/create-readme` skill — generates README.md (banesullivan template) plus a companion DEVELOPMENT.md for dev/contributor instructions, from evidenced project facts |
+| `skills/blind-spot-pass/SKILL.md` | `~/.claude/skills/blind-spot-pass/SKILL.md` | `/blind-spot-pass` skill — surfaces unknown unknowns in an unfamiliar domain/module before you start prompting about it |
+| `skills/brainstorm-and-prototype/SKILL.md` | `~/.claude/skills/brainstorm-and-prototype/SKILL.md` | `/brainstorm-and-prototype` skill — disposable HTML mockups or ranked option lists to react to before committing to a direction |
+| `skills/interview-me/SKILL.md` | `~/.claude/skills/interview-me/SKILL.md` | `/interview-me` skill — asks one ranked, architecture-relevant question at a time before implementation |
+| `skills/reference-reimplement/SKILL.md` | `~/.claude/skills/reference-reimplement/SKILL.md` | `/reference-reimplement` skill — ports semantics (not syntax) from a reference implementation into the target codebase/language |
+| `skills/implementation-plan/SKILL.md` | `~/.claude/skills/implementation-plan/SKILL.md` | `/implementation-plan` skill — HTML plan doc ordered by decision-likely-to-change first, mechanical work last |
+| `skills/implementation-notes/SKILL.md` | `~/.claude/skills/implementation-notes/SKILL.md` | `/implementation-notes` skill — keeps a running implementation-notes.md, defaulting to conservative choices on deviations |
+| `skills/pitch-doc/SKILL.md` | `~/.claude/skills/pitch-doc/SKILL.md` | `/pitch-doc` skill — packages a session's prototype/spec/notes into a demo-first doc for buy-in |
+| `skills/change-quiz/SKILL.md` | `~/.claude/skills/change-quiz/SKILL.md` | `/change-quiz` skill — HTML change report plus a self-graded quiz to verify understanding |
 
 ## Marketplace
 

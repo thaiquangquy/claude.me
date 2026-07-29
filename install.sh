@@ -13,6 +13,14 @@ declare -A FILES=(
   ["skills/sync-claude.md"]="skills/sync-claude.md"
   ["skills/commit-and-push/SKILL.md"]="skills/commit-and-push/SKILL.md"
   ["skills/create-readme/SKILL.md"]="skills/create-readme/SKILL.md"
+  ["skills/blind-spot-pass/SKILL.md"]="skills/blind-spot-pass/SKILL.md"
+  ["skills/brainstorm-and-prototype/SKILL.md"]="skills/brainstorm-and-prototype/SKILL.md"
+  ["skills/interview-me/SKILL.md"]="skills/interview-me/SKILL.md"
+  ["skills/reference-reimplement/SKILL.md"]="skills/reference-reimplement/SKILL.md"
+  ["skills/implementation-plan/SKILL.md"]="skills/implementation-plan/SKILL.md"
+  ["skills/implementation-notes/SKILL.md"]="skills/implementation-notes/SKILL.md"
+  ["skills/pitch-doc/SKILL.md"]="skills/pitch-doc/SKILL.md"
+  ["skills/change-quiz/SKILL.md"]="skills/change-quiz/SKILL.md"
 )
 
 echo "==> Installing claude.me config from $REPO_DIR"
@@ -26,6 +34,14 @@ fi
 mkdir -p "$CLAUDE_DIR/skills"
 mkdir -p "$CLAUDE_DIR/skills/commit-and-push"
 mkdir -p "$CLAUDE_DIR/skills/create-readme"
+mkdir -p "$CLAUDE_DIR/skills/blind-spot-pass"
+mkdir -p "$CLAUDE_DIR/skills/brainstorm-and-prototype"
+mkdir -p "$CLAUDE_DIR/skills/interview-me"
+mkdir -p "$CLAUDE_DIR/skills/reference-reimplement"
+mkdir -p "$CLAUDE_DIR/skills/implementation-plan"
+mkdir -p "$CLAUDE_DIR/skills/implementation-notes"
+mkdir -p "$CLAUDE_DIR/skills/pitch-doc"
+mkdir -p "$CLAUDE_DIR/skills/change-quiz"
 
 # Returns true if $1 is a symlink whose target lives inside $REPO_DIR
 _is_our_symlink() {
