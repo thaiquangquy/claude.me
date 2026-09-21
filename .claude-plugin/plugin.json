@@ -1,6 +1,6 @@
 {
   "name": "personal-skills",
-  "description": "Personal Claude Code skills — commit-and-push with conventional commits, JIRA extraction, and PR link recovery; create-readme for generating a README.md and companion DEVELOPMENT.md from evidenced project facts; a workflow-habits set (blind-spot-pass, brainstorm-and-prototype, interview-me, reference-reimplement, implementation-plan, implementation-notes, pitch-doc, change-quiz) for coding-session prompting patterns",
+  "description": "Personal Claude Code skills — commit-and-push with conventional commits, JIRA extraction, and PR link recovery; create-readme for generating a README.md and companion DEVELOPMENT.md from evidenced project facts; a workflow-habits set (blind-spot-pass, brainstorm-and-prototype, interview-me, reference-reimplement, implementation-plan, implementation-notes, pitch-doc, change-quiz) for coding-session prompting patterns; add-best-practice for filing a Java best practice discovered in any project into the java-tutorial repo",
   "author": { "name": "thaiquangquy" },
   "strict": false,
   "skills": [
@@ -13,6 +13,7 @@
     "./skills/implementation-plan",
     "./skills/implementation-notes",
     "./skills/pitch-doc",
-    "./skills/change-quiz"
+    "./skills/change-quiz",
+    "./skills/add-best-practice"
   ]
 }
