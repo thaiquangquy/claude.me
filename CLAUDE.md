@@ -38,8 +38,12 @@ Each question must include a default in parentheses:
 If no questions, write "None."
 
 ## Files
-One line per file: A / M / D prefix then path.
-A = add, M = modify, D = delete.
+A bullet list with one file per bullet, so that each file renders on its own line.
+Each bullet is a prefix and then the path: A = add, M = modify, D = delete.
+Example:
+- A src/new_file.ts
+- M src/existing.ts
+- D src/old_file.ts
 
 # Git push and pull requests
 - Push and create PRs through the GitHub CLI (`gh`), never over SSH. SSH is for my own use only.
