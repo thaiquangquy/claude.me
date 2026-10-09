@@ -9,6 +9,12 @@
       "source": "./",
       "description": "Personal Claude Code skill bundle",
       "category": "development"
+    },
+    {
+      "name": "pace-line",
+      "source": "./mods/pace-line",
+      "description": "Mod: two-line status band with project/branch, git stats, context bar, and 5h/7d rate-limit pace",
+      "category": "productivity"
     }
   ]
 }
