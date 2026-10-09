@@ -2,9 +2,8 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { GitInfo } from '../types'
-import { displayModel, formatLines, parseNumstat } from './format'
+import { formatLines, parseNumstat } from './format'
 
-const effortAtom = atom({ plugin: 'pace-line', key: 'effort' } as const, null)
 const linesAtom = atom({ plugin: 'pace-line', key: 'lines' } as const, null)
 
 // Countdowns move by the minute; git and context change between turns.
@@ -33,26 +32,20 @@ async function git($: EngineInterface, dir: string, now: number): Promise<GitInf
 }
 
 async function refresh($: EngineInterface): Promise<void> {
-  const [usage, model, dir, settings, acw, home, effort, now] = await Promise.all([
+  const [usage, dir, acw, home, now] = await Promise.all([
     $.session.usage(),
-    $.session.model(),
     $.session.root(),
-    $.settings.read(),
     $.env.get('CLAUDE_CODE_AUTO_COMPACT_WINDOW'),
     $.env.get('HOME'),
-    read($, effortAtom),
     $.clock.now(),
   ])
-  const settingsEffort = (settings as Record<string, unknown>).effortLevel
   const lines = formatLines({
-    model: displayModel(model),
     projectDir: dir,
     home: home ?? '',
     percent: usage.context.percent ?? 0,
     window: usage.context.window,
     tokens: usage.context.tokens ?? null,
     autoCompactWindow: /^\d+$/.test(acw ?? '') ? Number(acw) : 0,
-    effort: effort ?? (typeof settingsEffort === 'string' ? settingsEffort : null),
     rateLimits: usage.rateLimits,
     costUsd: usage.cost?.usd ?? 0,
     git: await git($, dir, now),
@@ -70,14 +63,9 @@ export const register: Register = on => {
     return result
   })
 
-  // Each main-loop model request carries the session's effort; the response
-  // brings new context and rate-limit figures.
+  // Each main-loop model response brings new context and rate-limit figures.
   on('turn.step', async function* ($, e, next) {
     const isMain = e.agentId === undefined
-    if (isMain && typeof e.effort === 'string') {
-      const effort = e.effort
-      await update($, effortAtom, () => effort)
-    }
     const result = yield* next(e)
     if (isMain) await refresh($)
 

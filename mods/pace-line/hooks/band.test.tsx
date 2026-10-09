@@ -28,9 +28,7 @@ function engine(on: On) {
     },
   }))
   on('session.start', (_$, e) => ({ cwd: e.cwd }))
-  on('session.model', () => ({ value: 'claude-opus-5-5' }))
   on('session.root', () => ({ value: '/work/myproj' }))
-  on('settings.read', () => ({ value: { effortLevel: 'high' } }))
   on('process.run', (_$, e) => {
     const args = e.argv.slice(4).join(' ')
     const stdout = args === 'branch --show-current' ? 'main\n' : args === 'diff HEAD --numstat' ? '4\t2\ta.ts\n' : '.git\n'
@@ -49,7 +47,7 @@ test('band draws both lines with the status colors', async ($, on) => {
 
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ plugin: 'pace-line', surface, ...BAND })
-    expect((await ui.find({ type: 'Text', text: 'Opus 5.5 (200K) high' }))?.props.color).toBe('cyan')
+    expect(await ui.find({ type: 'Text', text: /Opus|high/ })).toBeUndefined()
     expect(await ui.find({ type: 'Text', text: 'myproj (main)' })).toBeDefined()
     expect((await ui.find({ type: 'Text', text: '+4' }))?.props.color).toBe('green')
     expect((await ui.find({ type: 'Text', text: '█████████░' }))?.props.color).toBe('red')
@@ -64,6 +62,6 @@ test('band yields to a survey', async ($, on) => {
   await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
 
   const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'terminal', ...BAND, props: { ...BAND.props, hasSurvey: true } })
-  expect(await ui.find({ type: 'Text', text: /Opus/ })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: /myproj/ })).toBeUndefined()
   await ui.unmount()
 })

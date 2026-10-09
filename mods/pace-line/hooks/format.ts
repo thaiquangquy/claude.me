@@ -1,5 +1,6 @@
-// Pure port of statusline.sh's formatting. No `$` here so it can be unit-tested.
-// Line1: model (ctx) effort | project (branch) Nf +A -D
+// Port of statusline.sh's formatting. No `$` here so it can be unit-tested.
+// Model, context window and effort are left out: the Claude UI already shows them.
+// Line1: project (branch) Nf +A -D
 // Line2: bar PCT% CL | 5h used% [⇡⇣pace] countdown  7d used% [⇡⇣pace] countdown
 
 import type { Color, GitInfo, Line, Segment } from '../types'
@@ -7,7 +8,6 @@ import type { Color, GitInfo, Line, Segment } from '../types'
 export type RateLimit = { kind: string; percentUsed: number; resetsAt?: string }
 
 export type LineInput = {
-  model: string
   projectDir: string
   home: string
   // Context window: used percentage, window size, input tokens (null = unknown).
@@ -16,7 +16,6 @@ export type LineInput = {
   tokens: number | null
   // CLAUDE_CODE_AUTO_COMPACT_WINDOW, 0 when unset.
   autoCompactWindow: number
-  effort: string | null
   rateLimits: readonly RateLimit[]
   costUsd: number
   git: GitInfo | null
@@ -26,27 +25,6 @@ export type LineInput = {
 const FIVE_HOUR_MIN = 300
 const SEVEN_DAY_MIN = 10080
 
-// Maps a model id (`claude-opus-5-5[1m]`) to its display name (`Opus 5.5 (1M context)`).
-// Names that are already display names pass through unchanged.
-export function displayModel(id: string): string {
-  const m = /^claude-([a-z]+)-(\d+)-(\d+)(?:-\d{8})?(\[1m\])?$/.exec(id)
-  if (!m?.[1]) return id
-  const name = `${m[1].charAt(0).toUpperCase()}${m[1].slice(1)} ${m[2]}.${m[3]}`
-  return m[4] ? `${name} (1M context)` : name
-}
-
-export function effortLabel(effort: string | null): string {
-  switch (effort) {
-    case 'low':
-    case 'high':
-    case 'xhigh':
-    case 'max':
-      return effort
-    default:
-      return 'medium'
-  }
-}
-
 export function contextLabel(ctx: number): string {
   if (ctx >= 1_000_000) return `${Math.trunc(ctx / 1_000_000)}M`
   if (ctx > 0) return `${Math.trunc(ctx / 1000)}K`
@@ -55,10 +33,6 @@ export function contextLabel(ctx: number): string {
 
 function truncate(s: string, max: number): string {
   return [...s].length > max ? `${[...s].slice(0, max).join('')}…` : s
-}
-
-function width(s: string): number {
-  return [...s].length
 }
 
 function levelColor(pct: number): Color {
@@ -133,8 +107,6 @@ function projectSegments(input: LineInput): Segment[] {
 }
 
 export function formatLines(input: LineInput): [Line, Line] {
-  const ef = effortLabel(input.effort)
-
   // Auto-compact window: measure against the compaction threshold instead of
   // the full window when CLAUDE_CODE_AUTO_COMPACT_WINDOW is set.
   let pct = Math.trunc(input.percent)
@@ -148,24 +120,11 @@ export function formatLines(input: LineInput): [Line, Line] {
   }
   const cl = contextLabel(ctx)
 
-  // MODEL_SHORT: strip the redundant " context" word, add (CL) when missing,
-  // and cap "MODEL EF" at 28 chars.
-  let model = input.model.replace(' context)', ')')
-  if (ctx > 0 && !model.includes('(')) model = `${model} (${cl})`
-  if (width(`${model} ${ef}`) > 28) model = `${[...model].slice(0, 28 - 2 - ef.length).join('')}…`
-
   // Progress bar.
   const filled = Math.min(10, Math.max(0, Math.trunc(pct / 10)))
   const bar = '█'.repeat(filled) + '░'.repeat(10 - filled)
 
-  // Pad the shorter left side so the | aligns on both lines.
-  const left1 = `${model} ${ef}`
-  const left2 = `${bar} ${pct}% ${cl}`
-  const pad1 = ' '.repeat(Math.max(0, width(left2) - width(left1)))
-  const pad2 = ' '.repeat(Math.max(0, width(left1) - width(left2)))
-  const sep: Segment[] = [{ text: ' ' }, { text: '|', dim: true }, { text: '  ' }]
-
-  const line1: Line = [{ text: left1, color: 'cyan' }, { text: pad1 }, ...sep, ...projectSegments(input)]
+  const line1: Line = projectSegments(input)
 
   // Rate limits: real-time from the session; placeholders + cost when absent.
   const hasRateLimits = input.rateLimits.length > 0
@@ -178,9 +137,10 @@ export function formatLines(input: LineInput): [Line, Line] {
 
   const line2: Line = [
     { text: bar, color: levelColor(pct) },
-    { text: ` ${pct}% ${cl}` },
-    { text: pad2 },
-    ...sep,
+    { text: cl ? ` ${pct}% ${cl}` : ` ${pct}%` },
+    { text: ' ' },
+    { text: '|', dim: true },
+    { text: '  ' },
     { text: '5h ' },
     ...usageSegments(u5, rm5, FIVE_HOUR_MIN),
     { text: '  7d ' },
