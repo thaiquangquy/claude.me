@@ -45,6 +45,28 @@ To register the marketplace manually (if you manage `settings.json` separately),
 }
 ```
 
+## pace-line mod
+
+`mods/pace-line/` is a Claude Code mod (a plugin of function hooks) that draws the same two lines as `statusline.sh`, as a band above the prompt, with no `jq` or shell script needed:
+
+```
+Opus 5.5 (200K) high |  claude.me (master) 2f +10 -3
+████░░░░░░ 42% 200K  |  5h 35% ⇣15% 2h  7d 80% ⇡9% 2d
+```
+
+- Line 1: model (context window), effort, project (branch), changed files `+added -deleted`
+- Line 2: context bar (green < 70% ≤ yellow < 90% ≤ red), 5-hour and 7-day usage, pace vs. an even burn (`⇡` over, `⇣` under), time to reset. Without rate-limit data it shows `--` and the session cost.
+
+Install it from a terminal session:
+
+```
+/plugin install pace-line --marketplace thaiquangquy/claude.me
+```
+
+Answer `y` to add the marketplace, then pick a scope. If you also use `statusline.sh`, remove the `statusLine` block from `~/.claude/settings.json` to avoid showing the same info twice.
+
+Develop it locally with `claude --plugin-dir mods/pace-line`; check it with `claude plugin validate mods/pace-line` and `claude plugin test mods/pace-line`.
+
 ## First-time setup (new machine)
 
 ```bash

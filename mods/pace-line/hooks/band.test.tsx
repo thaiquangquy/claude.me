@@ -1,0 +1,69 @@
+import { expect, mock, test } from 'claude-code/testing'
+import type { On } from 'claude-code'
+
+const NOW = 1_800_000_000_000
+const BAND = { component: 'AbovePrompt', props: {
+    hasSurvey: false,
+    isWorking: false,
+    maxRows: 4,
+    bodyColumns: 120,
+    scroll: { offset: 0, bodyRows: 2 },
+    view: {},
+  },
+} as const
+
+// Stands in for the engine beneath the mod: session figures, settings, env, git.
+function engine(on: On) {
+  mock.clock(on, { now: NOW })
+  mock.env(on, { HOME: '/Users/me' })
+  on('session.usage', () => ({
+    value: {
+    startedAt: NOW,
+    context: { tokens: 186_000, window: 200_000, percent: 93 },
+    rateLimits: [
+      { kind: 'five_hour', percentUsed: 35, resetsAt: new Date(NOW + 150 * 60_000 + 30_000).toISOString() },
+      { kind: 'seven_day', percentUsed: 80, resetsAt: new Date(NOW + 2 * 1440 * 60_000 + 30_000).toISOString() },
+    ],
+    cost: { usd: 1.5 },
+    },
+  }))
+  on('session.start', (_$, e) => ({ cwd: e.cwd }))
+  on('session.model', () => ({ value: 'claude-opus-5-5' }))
+  on('session.root', () => ({ value: '/work/myproj' }))
+  on('settings.read', () => ({ value: { effortLevel: 'high' } }))
+  on('process.run', (_$, e) => {
+    const args = e.argv.slice(4).join(' ')
+    const stdout = args === 'branch --show-current' ? 'main\n' : args === 'diff HEAD --numstat' ? '4\t2\ta.ts\n' : '.git\n'
+    return { value: { exitCode: 0, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+  })
+  // Nothing beneath the mod draws in a test: stand in for the engine's own band.
+  on('ui.render', ($, e) => {
+    const { Box } = $.ui.resolve(e)
+    return <Box />
+  })
+}
+
+test('band draws both lines with the status colors', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ plugin: 'pace-line', surface, ...BAND })
+    expect((await ui.find({ type: 'Text', text: 'Opus 5.5 (200K) high' }))?.props.color).toBe('cyan')
+    expect(await ui.find({ type: 'Text', text: 'myproj (main)' })).toBeDefined()
+    expect((await ui.find({ type: 'Text', text: '+4' }))?.props.color).toBe('green')
+    expect((await ui.find({ type: 'Text', text: '█████████░' }))?.props.color).toBe('red')
+    expect((await ui.find({ type: 'Text', text: '⇣15%' }))?.props.color).toBe('green')
+    expect((await ui.find({ type: 'Text', text: '⇡9%' }))?.props.color).toBe('red')
+    await ui.unmount()
+  }
+})
+
+test('band yields to a survey', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+
+  const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'terminal', ...BAND, props: { ...BAND.props, hasSurvey: true } })
+  expect(await ui.find({ type: 'Text', text: /Opus/ })).toBeUndefined()
+  await ui.unmount()
+})

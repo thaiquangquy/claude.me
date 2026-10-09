@@ -1,0 +1,7 @@
+{
+  "name": "pace-line",
+  "version": "0.1.0",
+  "description": "Two-line status band: model, effort, context bar, git stats, and 5h/7d rate-limit pace",
+  "author": { "name": "thaiquangquy" },
+  "types": "./types/index.d.ts"
+}
