@@ -47,7 +47,7 @@ To register the marketplace manually (if you manage `settings.json` separately),
 
 ## pace-line mod
 
-`mods/pace-line/` is a Claude Code mod (a plugin of function hooks) that draws the same info as `statusline.sh`, minus model/context window/effort (the Claude UI already shows those), as a band above the prompt, with no `jq` or shell script needed:
+`mods/pace-line/` is a Claude Code mod (a plugin of function hooks) that draws the same info as `statusline.sh`, minus model/context window/effort (the Claude UI already shows those), as a band above the prompt in the **Claude desktop Code tab only**, with no `jq` or shell script needed. Terminal sessions draw nothing, since `statusline.sh` already covers them:
 
 ```
 claude.me (master) 2f +10 -3
@@ -63,7 +63,7 @@ Install it from a terminal session:
 /plugin install pace-line --marketplace thaiquangquy/claude.me
 ```
 
-Answer `y` to add the marketplace, then pick a scope. If you also use `statusline.sh`, remove the `statusLine` block from `~/.claude/settings.json` to avoid showing the same info twice.
+Answer `y` to add the marketplace, then pick the user scope so it also loads in desktop sessions. Keep `statusline.sh` for the terminal; the two never show at the same time.
 
 Develop it locally with `claude --plugin-dir mods/pace-line`; check it with `claude plugin validate mods/pace-line` and `claude plugin test mods/pace-line`.
 

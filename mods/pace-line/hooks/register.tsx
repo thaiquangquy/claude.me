@@ -31,7 +31,13 @@ async function git($: EngineInterface, dir: string, now: number): Promise<GitInf
   return info
 }
 
+// The terminal has statusline.sh; the band is for the desktop Code tab only.
+const SURFACE = 'desktop'
+
 async function refresh($: EngineInterface): Promise<void> {
+  // Skip the work (git included) while no desktop client is attached.
+  if (!(await $.session.surfaces()).includes(SURFACE)) return
+
   const [usage, dir, acw, home, now] = await Promise.all([
     $.session.usage(),
     $.session.root(),
@@ -55,6 +61,14 @@ async function refresh($: EngineInterface): Promise<void> {
 }
 
 export const register: Register = on => {
+  // A desktop client opening on a running session gets fresh lines at once.
+  on('session.attach', async ($, e, next) => {
+    const result = await next(e)
+    await refresh($)
+
+    return result
+  })
+
   on('session.start', async ($, e, next) => {
     const result = await next(e)
     await refresh($)
@@ -85,7 +99,7 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const lines = await read($, linesAtom)
-    if (lines === null || e.props.hasSurvey) {
+    if (e.surface !== SURFACE || lines === null || e.props.hasSurvey) {
       return next(e)
     }
 

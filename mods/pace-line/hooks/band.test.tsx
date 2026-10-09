@@ -12,8 +12,10 @@ const BAND = { component: 'AbovePrompt', props: {
   },
 } as const
 
-// Stands in for the engine beneath the mod: session figures, settings, env, git.
-function engine(on: On) {
+// Stands in for the engine beneath the mod: attached surfaces, session figures, env, git.
+function engine(on: On, surfaces: readonly ('terminal' | 'desktop')[] = ['terminal', 'desktop']) {
+  const calls = { git: 0 }
+  on('session.surfaces', () => ({ value: surfaces }))
   mock.clock(on, { now: NOW })
   mock.env(on, { HOME: '/Users/me' })
   on('session.usage', () => ({
@@ -30,6 +32,7 @@ function engine(on: On) {
   on('session.start', (_$, e) => ({ cwd: e.cwd }))
   on('session.root', () => ({ value: '/work/myproj' }))
   on('process.run', (_$, e) => {
+    calls.git += 1
     const args = e.argv.slice(4).join(' ')
     const stdout = args === 'branch --show-current' ? 'main\n' : args === 'diff HEAD --numstat' ? '4\t2\ta.ts\n' : '.git\n'
     return { value: { exitCode: 0, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
@@ -39,14 +42,15 @@ function engine(on: On) {
     const { Box } = $.ui.resolve(e)
     return <Box />
   })
+  return calls
 }
 
-test('band draws both lines with the status colors', async ($, on) => {
+test('band draws both lines with the status colors on desktop', async ($, on) => {
   engine(on)
-  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+  await $.session.start({ cwd: '/work/myproj', surface: 'desktop', isInteractive: true })
 
-  for (const surface of ['terminal', 'desktop'] as const) {
-    const ui = await $.ui.mount({ plugin: 'pace-line', surface, ...BAND })
+  {
+    const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'desktop', ...BAND })
     expect(await ui.find({ type: 'Text', text: /Opus|high/ })).toBeUndefined()
     expect(await ui.find({ type: 'Text', text: 'myproj (main)' })).toBeDefined()
     expect((await ui.find({ type: 'Text', text: '+4' }))?.props.color).toBe('green')
@@ -57,11 +61,27 @@ test('band draws both lines with the status colors', async ($, on) => {
   }
 })
 
-test('band yields to a survey', async ($, on) => {
+test('terminal gets no band (statusline.sh covers it)', async ($, on) => {
   engine(on)
   await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
 
-  const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'terminal', ...BAND, props: { ...BAND.props, hasSurvey: true } })
+  const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'terminal', ...BAND })
+  expect(await ui.find({ type: 'Text', text: /myproj/ })).toBeUndefined()
+  await ui.unmount()
+})
+
+test('terminal-only session skips the work, git included', async ($, on) => {
+  const calls = engine(on, ['terminal'])
+  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+
+  expect(calls.git).toBe(0)
+})
+
+test('band yields to a survey', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/work/myproj', surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'desktop', ...BAND, props: { ...BAND.props, hasSurvey: true } })
   expect(await ui.find({ type: 'Text', text: /myproj/ })).toBeUndefined()
   await ui.unmount()
 })
