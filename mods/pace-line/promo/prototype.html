@@ -101,7 +101,9 @@ button[aria-pressed="true"] { border-color: var(--clay); color: var(--clay) }
 /* ---------- overlays ---------- */
 .cap { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font: 700 34px/1.2 var(--display); text-shadow: 0 2px 16px rgba(0,0,0,.8); opacity: 0 }
 .tag { position: absolute; left: 140px; top: 24px; font: 600 15px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--clay); opacity: 0 }
-.ff { position: absolute; right: 150px; top: 18px; font: 600 22px/1 var(--mono); background: var(--fg); color: var(--ink); padding: 8px 14px; border-radius: 6px; opacity: 0 }
+.ff { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 18px; padding: 28px 40px; border: 1px solid var(--line); border-radius: 14px; background: rgba(13,17,23,.72); box-shadow: 0 30px 80px rgba(0,0,0,.5); opacity: 0 }
+#ffT { font: 700 76px/1 var(--mono); color: var(--fg); font-variant-numeric: tabular-nums; letter-spacing: -.02em }
+#ffB { font: 500 30px/1 var(--mono); white-space: pre; font-variant-numeric: tabular-nums }
 .end { display: grid; place-content: center; justify-items: center; gap: 22px; text-align: center }
 .mark { font: 800 120px/1 var(--display); letter-spacing: -.03em }
 .mark span { color: var(--clay) }
@@ -137,9 +139,9 @@ li strong { color: var(--fg) }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">pace-line · promo · animatic v1</div>
+    <div class="eyebrow">pace-line · promo · animatic v2</div>
     <h1>Hit the wall, or see it coming</h1>
-    <p>A 42-second rough cut of the promo, timed scene by scene. Scrub it, jump to a scene, then read the storyboard and the open calls below.</p>
+    <p>A 63-second rough cut with sound. Press play (sound needs a click to start), scrub, or jump to a scene, then read the storyboard and the open calls below.</p>
   </header>
 
   <div class="player">
@@ -203,7 +205,7 @@ li strong { color: var(--fg) }
         </div>
 
         <div class="tag" id="tag">Take two · same session</div>
-        <div class="ff" id="ff">⏩ +1h 40m</div>
+        <div class="ff" id="ff"><div id="ffT">▸▸ +0h 00m</div><div id="ffB"></div></div>
         <div class="cap" id="cap"></div>
       </div>
       <button class="poster" id="poster" aria-label="Play the animatic from the start"><span>▶ Play from start</span></button>
@@ -211,25 +213,26 @@ li strong { color: var(--fg) }
 
     <div class="controls">
       <button id="play" aria-label="Play or pause">▶ Play</button>
-      <input id="scrub" type="range" min="0" max="42" step="0.01" value="0" aria-label="Timeline">
-      <span id="clock">00.0 / 42.0s</span>
+      <input id="scrub" type="range" min="0" max="63" step="0.01" value="0" aria-label="Timeline">
+      <span id="clock">00.0 / 63.0s</span>
+      <button id="mute" aria-pressed="false" aria-label="Sound on or off">🔊 Sound on</button>
     </div>
     <div class="chips" id="chips"></div>
   </div>
 
   <section>
     <h2 class="sec">Storyboard</h2>
-    <p>No voiceover. On-screen captions carry the story so it works muted in a feed; keyboard clicks and one low synth note on the error carry the sound.</p>
+    <p>No voiceover. On-screen captions carry the story so it works muted in a feed. Sound, all synthesized in the browser for now: keyboard clicks on every keystroke, a low detuned synth note on the limit error, then a 100 BPM minor-key synth bed (bass, arpeggio, soft kick) that enters with scene 2. A whoosh rides the fast-forward and a two-note chime lands on the green check.</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Time</th><th>Scene</th><th>On screen</th><th>Caption</th><th>Why it's there</th></tr></thead>
         <tbody>
           <tr><td class="t">0–7s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code>, Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
-          <tr><td class="t">7–12s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
-          <tr><td class="t">12–22s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
-          <tr><td class="t">22–29s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
-          <tr><td class="t">29–38s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Fast-forward <code>+1h 40m</code>: pace slides to <code>⇣3%</code> green. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
-          <tr><td class="t">38–42s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td>One action: copy the install line.</td></tr>
+          <tr><td class="t">7–17s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
+          <tr><td class="t">17–33s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
+          <tr><td class="t">33–45s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
+          <tr><td class="t">45–58s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Terminal blurs; a centered <code>+1h 40m</code> fast-forward card shows the 5h pace sliding to <code>⇣3%</code> green. Blur clears on the green band. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
+          <tr><td class="t">58–63s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td>One action: copy the install line.</td></tr>
         </tbody>
       </table>
     </div>
@@ -241,7 +244,7 @@ li strong { color: var(--fg) }
       <li><strong>The ending is now a rewind, not a recovery.</strong> Your outline hits the limit, then switches model and continues. On Pro/Max the 5-hour limit is shared across models, so once you hit it, switching to Sonnet won't get you a green check, and a promo that implies it will draws “that's not how it works” comments. The honest and stronger story: scene 5 replays the same session with pace-line on, you see red <em>before</em> the wall, switch, and never hit it.</li>
       <li><strong>Pace only recovers with time.</strong> Pace is used % minus elapsed %, and used never goes down. So the green check needs a visible time jump. The numbers in scene 5 are real: 58% used at 36% elapsed is <code>⇡22%</code>; after 1h 40m on Sonnet, 66% used at 69% elapsed is <code>⇣3%</code>.</li>
       <li><strong>The body teaches with a contrast, not a definition.</strong> “Is 35% good?” has no answer until you add the clock. Two bars at the same 35% with different “now” markers make that click in one look; the formula comes after, as confirmation.</li>
-      <li><strong>The 7-day limit gets one callout, no more.</strong> It's the same mechanic, and a second story would push past 45 seconds.</li>
+      <li><strong>The 7-day limit gets one callout, no more.</strong> It's the same mechanic, and a second story would push the cut past a minute.</li>
     </ol>
   </section>
 
@@ -258,7 +261,7 @@ li strong { color: var(--fg) }
     <h2 class="sec">Decide before the final cut</h2>
     <ol>
       <li><strong>Format.</strong> I'd ship 16:9 as master and a 9:16 cut for Shorts/Reels/TikTok, with the terminal cropped to the band and prompt. (Default: both.)</li>
-      <li><strong>Length.</strong> 42s now. A 25s cut drops scene 2 and shortens scene 3. (Default: keep 42s; cut 25s later if it underperforms.)</li>
+      <li><strong>Length.</strong> 63s now, paced for reading. A 30s social cut drops scene 2 and the 7d callout. (Default: 63s master, 30s cut for Shorts.)</li>
       <li><strong>Build tool.</strong> Remotion (React, renders MP4 from code, same timeline logic as this page) vs. hand-animating in an editor. (Default: Remotion, committed under <code>mods/pace-line/promo/</code>.)</li>
       <li><strong>Voiceover.</strong> Captions only, or add your voice? (Default: captions only; your VO is a strong option for a Vietnamese version.)</li>
     </ol>
@@ -267,9 +270,9 @@ li strong { color: var(--fg) }
 
 <script>
 (() => {
-  const D = 42
+  const D = 63
   const SCENES = [
-    ['The wall', 0], ['The question', 7], ['Two stories', 12], ['Meet pace-line', 22], ['Take two', 29], ['End card', 38],
+    ['The wall', 0], ['The question', 7], ['Two stories', 17], ['Meet pace-line', 33], ['Take two', 45], ['End card', 58],
   ]
   const $ = id => document.getElementById(id)
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x))
@@ -311,32 +314,33 @@ li strong { color: var(--fg) }
 
   function render(t) {
     // ---- layers
-    op('L-term', Math.max(vis(t, 0, 7), vis(t, 22, 38)))
-    op('L-s2', vis(t, 7, 12))
-    op('L-s3', vis(t, 12, 22))
-    op('L-end', vis(t, 38, D + 1))
+    op('L-term', Math.max(vis(t, 0, 7), vis(t, 33, 58)))
+    op('L-s2', vis(t, 7, 17))
+    op('L-s3', vis(t, 17, 33))
+    op('L-end', vis(t, 58, D + 1))
 
     // ---- terminal content per scene
     let hist = '', typed = '', spin = '', err = 0, bandHTML = '', bandOp = 0, menu = -1, caret = true
+    let u5 = 58, e5 = 36, m5 = 192
     if (t < 7) {
       if (t < 3.2) typed = typeOut(CMD1, t, .6, 2.9)
       else hist = `<span class="u">&gt; ${CMD1}</span>`
       if (t >= 3.3 && t < 5) spin = `${SPIN[Math.floor(t * 8) % 4]} Refactoring… (${Math.floor((t - 3.3) * 7 + 1)}s · ↓ 2.1k tokens)`
       if (t >= 5) hist += `\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
       err = seg(t, 5, 5.3)
-    } else if (t < 29) {
+    } else if (t < 45) {
       hist = `<span class="u">&gt; plan the auth refactor</span>\n<span class="ok">⏺</span> Plan ready: 4 steps, 6 files`
       bandHTML = band({ model: 'Opus 5.5', effort: 'high', ctx: 42, u5: 35, e5: 20, m5: 240, u7: 61, e7: 57, m7: 4320 })
-      bandOp = seg(t, 23, 23.6)
+      bandOp = seg(t, 34, 34.6)
     } else {
       hist = `<span class="u">&gt; ${CMD1}</span>\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
-      let model = 'Opus 5.5', effort = 'high', p = 0
-      if (t >= 30.4 && t < 33.4) { typed = typeOut('/model', t, 30.4, 31.1); menu = t >= 31.3 ? (t >= 32.4 ? 1 : 0) : -1 }
-      if (t >= 33.4) { model = 'Sonnet 5.5'; effort = '–'; hist += `\n<span class="dim">⎿ Set model to Sonnet 5.5</span>` }
-      if (t >= 34) p = seg(t, 34, 36)
-      const u5 = Math.round(58 + 8 * p), e5 = Math.round(36 + 33 * p), m5 = Math.round(192 - 100 * p)
-      if (t >= 36.4) hist += `\n<span class="ok">✓ Auth refactor done · 14 tests passing</span>`
-      bandHTML = band({ model, effort, ctx: 64, u5, e5, m5, u7: 62, e7: 58, m7: 4250, pulse: t < 33.4 })
+      let model = 'Opus 5.5', effort = 'high'
+      if (t >= 48 && t < 51.8) { typed = typeOut('/model', t, 48, 49); menu = t >= 49.2 ? (t >= 50.6 ? 1 : 0) : -1 }
+      if (t >= 51.8) { model = 'Sonnet 5.5'; effort = '–'; hist += `\n<span class="dim">⎿ Set model to Sonnet 5.5</span>` }
+      const p = seg(t, 52.8, 55.4)
+      u5 = Math.round(58 + 8 * p); e5 = Math.round(36 + 33 * p); m5 = Math.round(192 - 100 * p)
+      if (t >= 56.2) hist += `\n<span class="ok">✓ Auth refactor done · 14 tests passing</span>`
+      bandHTML = band({ model, effort, ctx: 64, u5, e5, m5, u7: 62, e7: 58, m7: 4250, pulse: t < 51.8 })
       bandOp = 1
     }
     if (hist !== lastHist) { $('hist').innerHTML = `<div>${hist}</div>`; lastHist = hist }
@@ -353,13 +357,13 @@ li strong { color: var(--fg) }
     document.querySelectorAll('#menu div').forEach(d => d.classList.toggle('on', +d.dataset.i === menu))
 
     // ---- scene 4: zoom onto the band, then callouts on the live band spans
-    const z = t >= 22 && t < 29 ? 1 + .75 * (seg(t, 23.8, 24.5) - seg(t, 28.2, 28.9)) : 1
+    const z = t >= 33 && t < 45 ? 1 + .75 * (seg(t, 35, 35.7) - seg(t, 44, 44.7)) : 1
     document.querySelector('.term').style.transform = `scale(${z})`
     // [id, appears at, host span, which part, above (-) or below (+) the band, stem length]
-    const calls = [['c1', 24.6, 'b5', 0, -1, 62], ['c2', 25.3, 'b5', 1, -1, 112], ['c3', 26, 'b5', 2, 1, 26], ['c4', 26.7, 'b7', 0, 1, 78]]
+    const calls = [['c1', 36.2, 'b5', 0, -1, 62], ['c2', 37.8, 'b5', 1, -1, 112], ['c3', 39.4, 'b5', 2, 1, 26], ['c4', 41, 'b7', 0, 1, 78]]
     for (const [id, at, host, idx, side, stem] of calls) {
-      const el = $(id), o = Math.min(seg(t, at, at + .3), 1 - seg(t, 28.6, 29))
-      el.style.opacity = t >= 22 && t < 29 ? o : 0
+      const el = $(id), o = Math.min(seg(t, at, at + .4), 1 - seg(t, 43.6, 44))
+      el.style.opacity = t >= 33 && t < 45 ? o : 0
       const h = $(host)
       if (h && el.style.opacity > 0) {
         const spans = h.querySelectorAll('span')
@@ -372,28 +376,31 @@ li strong { color: var(--fg) }
       }
     }
 
-    // ---- scene 2
-    op('s2a', seg(t, 7.3, 7.8)); op('s2b', seg(t, 8.5, 9)); op('s2c', seg(t, 9.8, 10.3))
-    $('s2a').style.transform = `scale(${1.08 - .08 * seg(t, 7.3, 8)})`
+    // ---- scene 2: three beats, each held long enough to read
+    op('s2a', seg(t, 7.4, 8)); op('s2b', seg(t, 9.4, 10)); op('s2c', seg(t, 11.6, 12.3))
+    $('s2a').style.transform = `scale(${1.08 - .08 * seg(t, 7.4, 8.4)})`
 
-    // ---- scene 3
-    const g = seg(t, 13, 14.6)
+    // ---- scene 3: build A, read it, build B, read it, then the formula
+    const g = seg(t, 18, 19.6)
     $('fA').style.width = `${35 * g}%`; $('fB').style.width = `${35 * g}%`
-    $('nA').style.left = `${20 * seg(t, 14.4, 15.4)}%`; $('nB').style.left = `${80 * seg(t, 15, 16.2)}%`
-    op('nA', seg(t, 14.4, 14.6)); op('nB', seg(t, 15, 15.2))
-    op('vA', seg(t, 16, 16.4)); op('vB', seg(t, 17, 17.4)); op('form', seg(t, 18.8, 19.3))
+    $('nA').style.left = `${20 * seg(t, 19.8, 20.8)}%`; $('nB').style.left = `${80 * seg(t, 23.4, 24.6)}%`
+    op('nA', seg(t, 19.8, 20)); op('nB', seg(t, 23.4, 23.6))
+    op('vA', seg(t, 21, 21.5)); op('vB', seg(t, 25, 25.5)); op('form', seg(t, 28, 28.6))
 
-    // ---- overlays
-    op('tag', vis(t, 29.1, 37.8))
-    op('ff', vis(t, 33.8, 36.4, .2))
-    const p = seg(t, 34, 36)
-    $('ff').textContent = `⏩ +${Math.floor(100 * p / 60)}h ${String(Math.round(100 * p) % 60).padStart(2, '0')}m`
+    // ---- scene 5: fast-forward card centered over a blurred terminal
+    const blur = vis(t, 52.2, 56, .4)
+    $('L-term').style.filter = blur ? `blur(${10 * blur}px) brightness(${1 - .45 * blur})` : ''
+    op('tag', vis(t, 45.1, 57.8))
+    op('ff', blur)
+    const ffMin = Math.round(100 * seg(t, 52.8, 55.4))
+    $('ffT').textContent = `▸▸ +${Math.floor(ffMin / 60)}h ${String(ffMin % 60).padStart(2, '0')}m`
+    $('ffB').innerHTML = `<span class="dim">on Sonnet 5.5 ·</span> 5h ${usage(u5, e5, rm(m5))}`
     const caps = [
       [5.4, 7, 'Mid-task. Zero warning.'],
-      [23, 28.7, 'pace-line: your pace, right above the prompt.'],
-      [29.2, 31.2, 'This time you see it coming.'],
-      [33.8, 36.2, 'Lighter model. Slower burn.'],
-      [36.5, 38, 'Task done. Limit never hit.'],
+      [34.2, 44.6, 'pace-line: your pace, right above the prompt.'],
+      [45.3, 47.8, 'This time you see it coming.'],
+      [52.4, 55.8, 'Lighter model. Slower burn.'],
+      [56.4, 58, 'Task done. Limit never hit.'],
     ]
     const c = caps.find(([a, b]) => t >= a && t <= b)
     $('cap').textContent = c ? c[2] : ''
@@ -406,13 +413,103 @@ li strong { color: var(--fg) }
     document.querySelectorAll('#chips button').forEach((b, j) => b.setAttribute('aria-pressed', String(j === cur)))
   }
 
+  // ---- sound: synthesized with Web Audio, scheduled on the same timeline as the picture
+  const AU = { ctx: null, bus: null, noise: null, muted: false, base: 0, i: 0, timer: 0 }
+  const EVENTS = (() => {
+    const ev = []
+    const keys = (s, a, b) => [...s].forEach((ch, i) => ev.push({ t: a + (b - a) * (i + 1) / s.length, k: 'key', v: ch === ' ' ? 1 : 0 }))
+    keys(CMD1, .6, 2.9); ev.push({ t: 3.2, k: 'enter' })
+    ev.push({ t: 5, k: 'error' })
+    keys('/model', 48, 49); ev.push({ t: 50.6, k: 'key', v: 2 }); ev.push({ t: 51.8, k: 'enter' })
+    ev.push({ t: 52.3, k: 'whoosh' }); ev.push({ t: 56.2, k: 'chime' })
+    // Music: 100 BPM, Am F C G, enters with scene 2 and runs under the end card.
+    const BAR = 2.4, START = 7
+    const CH = [[110, [220, 261.6, 329.6, 440]], [87.3, [174.6, 220, 261.6, 349.2]], [130.8, [261.6, 329.6, 392, 523.3]], [98, [196, 246.9, 293.7, 392]]]
+    const ARP = [0, 1, 2, 3, 2, 1, 2, 3]
+    for (let bar = 0; START + bar * BAR < D - .5; bar++) {
+      const t0 = START + bar * BAR, [root, tones] = CH[bar % 4]
+      for (let e = 0; e < 8; e++) ev.push({ t: t0 + e * .3, k: 'bass', v: root })
+      if (bar >= 2) for (let b = 0; b < 4; b++) { ev.push({ t: t0 + b * .6, k: 'kick' }); ev.push({ t: t0 + b * .6 + .3, k: 'hat' }) }
+      if (bar >= 1) for (let s = 0; s < 16; s++) ev.push({ t: t0 + s * .15, k: 'arp', v: tones[ARP[s % 8]] })
+    }
+    return ev.sort((a, b) => a.t - b.t)
+  })()
+
+  function env(g, T, peak, attack, decay) {
+    g.gain.setValueAtTime(0, T); g.gain.linearRampToValueAtTime(peak, T + attack); g.gain.exponentialRampToValueAtTime(.0001, T + attack + decay)
+  }
+  function voice(type, f, T, peak, attack, decay, dest, filter) {
+    const c = AU.ctx, o = c.createOscillator(), g = c.createGain()
+    o.type = type; o.frequency.setValueAtTime(f, T)
+    env(g, T, peak, attack, decay)
+    let n = o
+    if (filter) { const fl = c.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = filter; o.connect(fl); n = fl }
+    n.connect(g); g.connect(dest)
+    o.start(T); o.stop(T + attack + decay + .05)
+    return o
+  }
+  function noise(T, dur, type, freq, q, peak, dest) {
+    const c = AU.ctx, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain()
+    s.buffer = AU.noise; f.type = type; f.frequency.value = freq; f.Q.value = q
+    env(g, T, peak, .002, dur)
+    s.connect(f); f.connect(g); g.connect(dest); s.start(T, Math.random() * .5); s.stop(T + dur + .05)
+    return f
+  }
+  const PLAY = {
+    key: (T, v) => { noise(T, v === 1 ? .05 : .03, 'bandpass', v === 1 ? 1600 : 2600 + Math.random() * 1400, 1.2, .5, AU.bus); voice('sine', v === 1 ? 140 : 190, T, .12, .001, .03, AU.bus) },
+    enter: T => { noise(T, .07, 'bandpass', 1200, 1, .7, AU.bus); voice('sine', 110, T, .25, .001, .07, AU.bus) },
+    error: T => { voice('sawtooth', 55, T, .35, .03, 2.2, AU.bus, 320); voice('sawtooth', 55.6, T, .3, .03, 2.2, AU.bus, 320); voice('sine', 41.2, T, .5, .03, 2.4, AU.bus) },
+    whoosh: T => { const f = noise(T, 1.8, 'bandpass', 300, 2, .25, AU.bus); f.frequency.setValueAtTime(300, T); f.frequency.exponentialRampToValueAtTime(5000, T + 1.6) },
+    chime: T => { voice('sine', 880, T, .16, .005, 1.4, AU.bus); voice('sine', 1318.5, T + .09, .12, .005, 1.4, AU.bus) },
+    kick: T => { const o = voice('sine', 120, T, .55, .002, .28, AU.music); o.frequency.exponentialRampToValueAtTime(45, T + .12) },
+    hat: T => noise(T, .04, 'highpass', 7500, .7, .12, AU.music),
+    bass: (T, f) => voice('sawtooth', f, T, .14, .01, .24, AU.music, 480),
+    arp: (T, f) => voice('triangle', f * 2, T, .06, .005, .16, AU.music),
+  }
+
+  function audioStart(fromT) {
+    try {
+      if (!AU.ctx) {
+        AU.ctx = new (window.AudioContext || window.webkitAudioContext)()
+        AU.noise = AU.ctx.createBuffer(1, AU.ctx.sampleRate, AU.ctx.sampleRate)
+        const d = AU.noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
+      }
+      AU.ctx.resume()
+    } catch { return }
+    audioStop()
+    const c = AU.ctx
+    AU.bus = c.createGain(); AU.bus.gain.value = AU.muted ? 0 : .8; AU.bus.connect(c.destination)
+    AU.music = c.createGain(); AU.music.connect(AU.bus)
+    AU.base = c.currentTime + .05 - fromT
+    // Music fades in with scene 2 and out over the end card.
+    const mg = AU.music.gain, at = s => Math.max(c.currentTime, AU.base + s)
+    mg.setValueAtTime(fromT < 7 ? 0 : 1, c.currentTime)
+    if (fromT < 8.2) mg.linearRampToValueAtTime(1, at(8.2))
+    mg.setValueAtTime(1, at(D - 2.5)); mg.linearRampToValueAtTime(0, at(D))
+    AU.i = EVENTS.findIndex(e => e.t >= fromT); if (AU.i < 0) AU.i = EVENTS.length
+    const pump = () => {
+      const horizon = c.currentTime + .25
+      while (AU.i < EVENTS.length && AU.base + EVENTS[AU.i].t < horizon) {
+        const e = EVENTS[AU.i++]; PLAY[e.k](Math.max(c.currentTime, AU.base + e.t), e.v)
+      }
+    }
+    pump(); AU.timer = setInterval(pump, 60)
+  }
+  function audioStop() {
+    clearInterval(AU.timer)
+    if (AU.bus) { const b = AU.bus; b.gain.setTargetAtTime(0, AU.ctx.currentTime, .02); setTimeout(() => b.disconnect(), 150); AU.bus = null }
+  }
+
   // ---- scaling
   const fit = () => { stage.style.transform = `scale(${frame.clientWidth / 1280})` }
   new ResizeObserver(fit).observe(frame); fit()
 
   // ---- playback
-  let t = 27.6, playing = false, last = 0
-  const setPlaying = v => { playing = v; $('play').textContent = v ? '❚❚ Pause' : '▶ Play'; if (v) { last = performance.now(); requestAnimationFrame(tick) } }
+  let t = 39.4, playing = false, last = 0
+  const setPlaying = v => {
+    playing = v; $('play').textContent = v ? '❚❚ Pause' : '▶ Play'
+    if (v) { last = performance.now(); audioStart(t); requestAnimationFrame(tick) } else audioStop()
+  }
   function tick(now) {
     if (!playing) return
     t += (now - last) / 1000; last = now
@@ -420,13 +517,20 @@ li strong { color: var(--fg) }
     render(t); requestAnimationFrame(tick)
   }
   const start = () => { $('poster').hidden = true; if (t >= D - .05) t = 0; setPlaying(true) }
+  const seek = to => { t = to; render(t); if (playing) audioStart(t) }
   $('poster').onclick = () => { t = 0; start() }
   $('play').onclick = () => { $('poster').hidden = true; playing ? setPlaying(false) : start() }
-  $('scrub').oninput = e => { $('poster').hidden = true; t = +e.target.value; render(t) }
+  $('scrub').oninput = e => { $('poster').hidden = true; seek(+e.target.value) }
+  $('mute').onclick = () => {
+    AU.muted = !AU.muted
+    $('mute').textContent = AU.muted ? '🔇 Sound off' : '🔊 Sound on'
+    $('mute').setAttribute('aria-pressed', String(AU.muted))
+    if (AU.bus) AU.bus.gain.setTargetAtTime(AU.muted ? 0 : .8, AU.ctx.currentTime, .02)
+  }
   SCENES.forEach(([name, at], i) => {
     const b = document.createElement('button')
     b.textContent = `${i + 1} · ${name}`
-    b.onclick = () => { $('poster').hidden = true; t = at; render(t); if (!playing) setPlaying(true) }
+    b.onclick = () => { $('poster').hidden = true; seek(at); if (!playing) setPlaying(true) }
     $('chips').appendChild(b)
   })
   document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); $('play').click() } })
