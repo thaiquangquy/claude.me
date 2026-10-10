@@ -143,9 +143,9 @@ li strong { color: var(--fg) }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">pace-line · promo · animatic v3</div>
+    <div class="eyebrow">pace-line · promo · animatic v4</div>
     <h1>Hit the wall, or see it coming</h1>
-    <p>A 63-second rough cut with sound. Press play (sound needs a click to start), scrub, or jump to a scene, then read the storyboard and the open calls below.</p>
+    <p>A 66-second rough cut with sound. Press play (sound needs a click to start), scrub, or jump to a scene, then read the storyboard and the open calls below.</p>
   </header>
 
   <div class="player">
@@ -217,8 +217,8 @@ li strong { color: var(--fg) }
 
     <div class="controls">
       <button id="play" aria-label="Play or pause">▶ Play</button>
-      <input id="scrub" type="range" min="0" max="63" step="0.01" value="0" aria-label="Timeline">
-      <span id="clock">00.0 / 63.0s</span>
+      <input id="scrub" type="range" min="0" max="66" step="0.01" value="0" aria-label="Timeline">
+      <span id="clock">00.0 / 66.0s</span>
       <button id="mute" aria-pressed="false" aria-label="Sound on or off">🔊 Sound on</button>
     </div>
     <div class="controls">
@@ -244,12 +244,12 @@ li strong { color: var(--fg) }
       <table>
         <thead><tr><th>Time</th><th>Scene</th><th>On screen</th><th>Caption</th><th>Phụ đề (VI)</th><th>Why it's there</th></tr></thead>
         <tbody>
-          <tr><td class="t">0–7s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code> (VI: <code lang="vi">refactor module auth và viết thêm test</code>), Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td lang="vi">Đang làm dở. Không một lời cảnh báo.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
-          <tr><td class="t">7–17s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td lang="vi">Ổn hay không ổn? Thanh usage chỉ cho biết bạn đã dùng bao nhiêu. Nó không cho biết bạn có trụ được tới lúc reset hay không.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
-          <tr><td class="t">17–33s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td lang="vi">Cùng 35%. Hai ngày làm việc khác hẳn nhau.</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
-          <tr><td class="t">33–45s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td lang="vi">pace-line: nhịp dùng quota, ngay trên ô prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
-          <tr><td class="t">45–58s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Terminal blurs; a centered <code>+1h 40m</code> fast-forward card shows the 5h pace sliding to <code>⇣3%</code> green. Blur clears on the green band. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td lang="vi">Lần này, bạn thấy trước. → Model nhẹ hơn. Hao quota chậm hơn. → Xong việc. Không chạm limit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
-          <tr><td class="t">58–63s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td lang="vi">Xem nhịp, không chỉ xem %.</td><td>One action: copy the install line.</td></tr>
+          <tr><td class="t">0–10s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code> (VI: <code>refactor module auth and write tests</code>), Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td lang="vi">Đang làm dở. Không một lời cảnh báo.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
+          <tr><td class="t">10–20s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td lang="vi">Có dính limit trước khi xong việc? Con số % một mình không trả lời được.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
+          <tr><td class="t">20–36s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td lang="vi">Cùng 35%. Hai ngày làm việc khác hẳn nhau.</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
+          <tr><td class="t">36–48s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td lang="vi">pace-line: nhịp dùng quota, ngay trên ô prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
+          <tr><td class="t">48–61s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Terminal blurs; a centered <code>+1h 40m</code> fast-forward card shows the 5h pace sliding to <code>⇣3%</code> green. Blur clears on the green band. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td lang="vi">Lần này, bạn thấy trước. → Model nhẹ hơn. Hao quota chậm hơn. → Xong việc. Không chạm limit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
+          <tr><td class="t">61–66s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td lang="vi">Xem nhịp, không chỉ xem % sử dụng.</td><td>One action: copy the install line.</td></tr>
         </tbody>
       </table>
     </div>
@@ -278,7 +278,7 @@ li strong { color: var(--fg) }
     <h2 class="sec">Decide before the final cut</h2>
     <ol>
       <li><strong>Format.</strong> I'd ship 16:9 as master and a 9:16 cut for Shorts/Reels/TikTok, with the terminal cropped to the band and prompt. (Default: both.)</li>
-      <li><strong>Length.</strong> 63s now, paced for reading. A 30s social cut drops scene 2 and the 7d callout. (Default: 63s master, 30s cut for Shorts.)</li>
+      <li><strong>Length.</strong> 66s now, paced for reading. A 30s social cut drops scene 2 and the 7d callout. (Default: 66s master, 30s cut for Shorts.)</li>
       <li><strong>Build tool.</strong> Remotion (React, renders MP4 from code, same timeline logic as this page) vs. hand-animating in an editor. (Default: Remotion, committed under <code>mods/pace-line/promo/</code>.)</li>
       <li><strong>Vietnamese final.</strong> Captions in Vietnamese, with or without your voice reading them? (Default: captions only for the first cut; add your VO if the clip leads your channel.)</li>
     </ol>
@@ -287,9 +287,10 @@ li strong { color: var(--fg) }
 
 <script>
 (() => {
-  const D = 63
+  const OFF = 3            // scene 1 runs 0–10s; later scenes are authored in story time = real − OFF
+  const D = 66
   const SCENES = [
-    ['The wall', 0], ['The question', 7], ['Two stories', 17], ['Meet pace-line', 33], ['Take two', 45], ['End card', 58],
+    ['The wall', 0], ['The question', 10], ['Two stories', 20], ['Meet pace-line', 36], ['Take two', 48], ['End card', 61],
   ]
   const $ = id => document.getElementById(id)
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x))
@@ -338,14 +339,14 @@ li strong { color: var(--fg) }
       cap4: 'Lighter model. Slower burn.', cap5: 'Task done. Limit never hit.',
     },
     vi: {
-      cmd: 'refactor module auth và viết thêm test', plan: 'lên kế hoạch refactor auth',
-      c1: 'đã dùng', c2: 'nhịp so với dùng đều', c3: 'reset sau', c4: 'tương tự cho 7 ngày',
-      s2b: 'Ổn hay không ổn?', s2c: 'Thanh usage chỉ cho biết bạn đã dùng bao nhiêu. Nó không cho biết bạn có trụ được tới lúc reset hay không.',
+      cmd: 'refactor module auth and write tests', plan: 'lên kế hoạch refactor auth',
+      c1: 'đã dùng', c2: 'nhịp so với thời gian reset', c3: 'reset sau', c4: 'tương tự cho 7 ngày',
+      s2b: 'Có dính limit trước khi xong việc?', s2c: 'Con số % một mình không trả lời được.',
       s3h: 'Cùng 35%. Hai ngày làm việc khác hẳn nhau.',
       lblA: 'Phiên A · mới 1h trong khung 5h', lblB: 'Phiên B · đã 4h trong khung 5h', nowA: 'đang ở 1h', nowB: 'đang ở 4h',
       vA: '⇡15% nhanh hơn nhịp → chạm limit sau ~1h 50m, reset sau 4h', vB: '⇣45% chậm hơn nhịp → còn dư nhiều, cứ làm tiếp',
-      form: 'pace = <em>% đã dùng</em> − <em>% thời gian đã trôi</em>',
-      tagline: 'Xem nhịp, không chỉ xem %.', repo: 'Một mod cho Claude Code · github.com/thaiquangquy/claude.me', tag: 'Làm lại · cùng phiên đó',
+      form: 'pace = <em>% đã dùng</em> − <em>% thời gian đã qua</em>',
+      tagline: 'Xem nhịp, không chỉ xem % sử dụng.', repo: 'Một mod cho Claude Code · github.com/thaiquangquy/claude.me', tag: 'Làm lại · cùng phiên đó',
       ff: 'với Sonnet 5.5 ·',
       cap1: 'Đang làm dở. Không một lời cảnh báo.', cap2: 'pace-line: nhịp dùng quota, ngay trên ô prompt.', cap3: 'Lần này, bạn thấy trước.',
       cap4: 'Model nhẹ hơn. Hao quota chậm hơn.', cap5: 'Xong việc. Không chạm limit.',
@@ -354,15 +355,23 @@ li strong { color: var(--fg) }
   let lang = 'en'
   const S = k => STR[lang][k]
   const SPIN = ['✻', '✶', '✳', '✢']
-  const typeOut = (s, t, a, b) => s.slice(0, Math.round(clamp((t - a) / (b - a)) * s.length))
+  // Human typing rhythm: uneven gaps, a longer beat after each word. Picture and keystroke sounds share it.
+  const keyTimes = (s, a, b) => {
+    const w = [...s].map((ch, i) => 1 + (ch === ' ' ? .9 : 0) + ((i * 37) % 11) / 11 * .7)
+    const total = w.reduce((x, y) => x + y, 0)
+    let acc = 0
+    return w.map(x => a + (b - a) * (acc += x) / total)
+  }
+  const typeOut = (s, t, a, b) => [...s].slice(0, keyTimes(s, a, b).filter(k => k <= t).length).join('')
 
   const stage = $('stage'), frame = $('frame')
   const op = (id, v) => { $(id).style.opacity = v }
   let lastBand = '', lastHist = ''
 
-  function render(t) {
+  function render(tr) {
+    const t = tr - OFF
     // ---- layers
-    op('L-term', Math.max(vis(t, 0, 7), vis(t, 33, 58)))
+    op('L-term', Math.max(vis(tr, 0, 10), vis(t, 33, 58)))
     op('L-s2', vis(t, 7, 17))
     op('L-s3', vis(t, 17, 33))
     op('L-end', vis(t, 58, D + 1))
@@ -371,11 +380,11 @@ li strong { color: var(--fg) }
     let hist = '', typed = '', spin = '', err = 0, bandHTML = '', bandOp = 0, menu = -1, caret = true
     let u5 = 58, e5 = 36, m5 = 192
     if (t < 7) {
-      if (t < 3.2) typed = typeOut(S('cmd'), t, .6, 2.9)
+      if (tr < 5.4) typed = typeOut(S('cmd'), tr, .6, 5)
       else hist = `<span class="u">&gt; ${S('cmd')}</span>`
-      if (t >= 3.3 && t < 5) spin = `${SPIN[Math.floor(t * 8) % 4]} Refactoring… (${Math.floor((t - 3.3) * 7 + 1)}s · ↓ 2.1k tokens)`
-      if (t >= 5) hist += `\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
-      err = seg(t, 5, 5.3)
+      if (tr >= 5.6 && tr < 7.6) spin = `${SPIN[Math.floor(tr * 6) % 4]} Refactoring… (${Math.floor((tr - 5.6) * 7 + 1)}s · ↓ 2.1k tokens)`
+      if (tr >= 7.6) hist += `\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
+      err = seg(tr, 7.6, 7.9)
     } else if (t < 45) {
       hist = `<span class="u">&gt; ${S('plan')}</span>\n<span class="ok">⏺</span> Plan ready: 4 steps, 6 files`
       bandHTML = band({ model: 'Opus 5.5', effort: 'high', ctx: 42, u5: 35, e5: 20, m5: 240, u7: 61, e7: 57, m7: 4320 })
@@ -383,7 +392,7 @@ li strong { color: var(--fg) }
     } else {
       hist = `<span class="u">&gt; ${S('cmd')}</span>\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
       let model = 'Opus 5.5', effort = 'high'
-      if (t >= 48 && t < 51.8) { typed = typeOut('/model', t, 48, 49); menu = t >= 49.2 ? (t >= 50.6 ? 1 : 0) : -1 }
+      if (t >= 48 && t < 51.8) { typed = typeOut('/model', t, 48, 49.3); menu = t >= 49.2 ? (t >= 50.6 ? 1 : 0) : -1 }
       if (t >= 51.8) { model = 'Sonnet 5.5'; effort = '–'; hist += `\n<span class="dim">⎿ Set model to Sonnet 5.5</span>` }
       const p = seg(t, 52.8, 55.4)
       u5 = Math.round(58 + 8 * p); e5 = Math.round(36 + 33 * p); m5 = Math.round(192 - 100 * p)
@@ -400,7 +409,7 @@ li strong { color: var(--fg) }
     $('spin').hidden = !spin
     $('err').hidden = err === 0
     $('err').style.opacity = err
-    $('caret').style.opacity = caret && (Math.floor(t * 2.2) % 2 === 0 || typed) ? 1 : 0
+    $('caret').style.opacity = caret && (Math.floor(tr * 2.2) % 2 === 0 || typed) ? 1 : 0
     $('menu').hidden = menu < 0
     document.querySelectorAll('#menu div').forEach(d => d.classList.toggle('on', +d.dataset.i === menu))
 
@@ -444,7 +453,7 @@ li strong { color: var(--fg) }
     $('ffT').textContent = `▸▸ +${Math.floor(ffMin / 60)}h ${String(ffMin % 60).padStart(2, '0')}m`
     $('ffB').innerHTML = `<span class="dim">${S('ff')}</span> 5h ${usage(u5, e5, rm(m5))}`
     const caps = [
-      [5.4, 7, S('cap1')],
+      [5.2, 7, S('cap1')],
       [34.2, 44.6, S('cap2')],
       [45.3, 47.8, S('cap3')],
       [52.4, 55.8, S('cap4')],
@@ -455,9 +464,9 @@ li strong { color: var(--fg) }
     $('cap').style.opacity = c ? vis(t, c[0], c[1], .25) : 0
 
     // ---- controls
-    $('scrub').value = t
-    $('clock').textContent = `${t.toFixed(1).padStart(4, '0')} / ${D.toFixed(1)}s`
-    const cur = SCENES.reduce((i, s, j) => t >= s[1] ? j : i, 0)
+    $('scrub').value = tr
+    $('clock').textContent = `${tr.toFixed(1).padStart(4, '0')} / ${D.toFixed(1)}s`
+    const cur = SCENES.reduce((i, s, j) => tr >= s[1] ? j : i, 0)
     document.querySelectorAll('#chips button').forEach((b, j) => b.setAttribute('aria-pressed', String(j === cur)))
   }
 
@@ -466,13 +475,13 @@ li strong { color: var(--fg) }
   // Rebuilt on every start: the typed prompt, and so its keystrokes, depends on the language.
   const buildEvents = () => {
     const ev = []
-    const keys = (s, a, b) => [...s].forEach((ch, i) => ev.push({ t: a + (b - a) * (i + 1) / s.length, k: 'key', v: ch === ' ' ? 1 : 0 }))
-    keys(S('cmd'), .6, 2.9); ev.push({ t: 3.2, k: 'enter' })
-    ev.push({ t: 5, k: 'error' })
-    keys('/model', 48, 49); ev.push({ t: 50.6, k: 'key', v: 2 }); ev.push({ t: 51.8, k: 'enter' })
-    ev.push({ t: 52.3, k: 'whoosh' }); ev.push({ t: 56.2, k: 'chime' })
+    const keys = (s, a, b) => { const ks = keyTimes(s, a, b); [...s].forEach((ch, i) => ev.push({ t: ks[i], k: 'key', v: ch === ' ' ? 1 : 0 })) }
+    keys(S('cmd'), .6, 5); ev.push({ t: 5.4, k: 'enter' })
+    ev.push({ t: 7.6, k: 'error' })
+    keys('/model', 48 + OFF, 49.3 + OFF); ev.push({ t: 50.6 + OFF, k: 'key', v: 2 }); ev.push({ t: 51.8 + OFF, k: 'enter' })
+    ev.push({ t: 52.3 + OFF, k: 'whoosh' }); ev.push({ t: 56.2 + OFF, k: 'chime' })
     // Music: 100 BPM, Am F C G, enters with scene 2 and runs under the end card.
-    const BAR = 2.4, START = 7
+    const BAR = 2.4, START = 7 + OFF
     const CH = [[110, [220, 261.6, 329.6, 440]], [87.3, [174.6, 220, 261.6, 349.2]], [130.8, [261.6, 329.6, 392, 523.3]], [98, [196, 246.9, 293.7, 392]]]
     const ARP = [0, 1, 2, 3, 2, 1, 2, 3]
     for (let bar = 0; START + bar * BAR < D - .5; bar++) {
@@ -511,12 +520,12 @@ li strong { color: var(--fg) }
   const KBD = {
     thock(T, kind) {
       const big = kind === 'space' || kind === 'enter', b = AU.bus
-      noise(T, .012, 'highpass', rnd(2400, .3), .7, rnd(.12, .4), b)                          // keycap tick
-      noise(T + .006, big ? .07 : .045, 'lowpass', rnd(big ? 650 : 950, .2), 1.4, rnd(big ? .9 : .7, .3), b) // bottom-out thock
-      const o = voice('sine', rnd(big ? 95 : 140, .15), T + .006, rnd(.28, .3), .001, big ? .09 : .05, b)
-      o.frequency.exponentialRampToValueAtTime(big ? 60 : 85, T + .07)                           // case resonance
-      noise(T + rnd(.085, .25), .015, 'bandpass', rnd(1800, .25), 2, rnd(.08, .4), b)          // release
-      if (big) noise(T + .02, .05, 'bandpass', 3200, 4, .07, b)                                 // stabilizer rattle
+      noise(T, .018, 'highpass', rnd(2000, .3), .7, rnd(.08, .4), b)                          // keycap tick
+      noise(T + .01, big ? .12 : .08, 'lowpass', rnd(big ? 520 : 760, .2), 1.4, rnd(big ? .85 : .65, .3), b) // bottom-out thock
+      const o = voice('sine', rnd(big ? 85 : 120, .15), T + .01, rnd(.3, .3), .003, big ? .16 : .1, b)
+      o.frequency.exponentialRampToValueAtTime(big ? 52 : 72, T + .12)                           // case resonance
+      noise(T + rnd(.15, .25), .025, 'bandpass', rnd(1500, .25), 2, rnd(.06, .4), b)           // release
+      if (big) noise(T + .03, .08, 'bandpass', 2800, 4, .05, b)                                 // stabilizer rattle
     },
     clicky(T, kind) {
       const big = kind === 'space' || kind === 'enter', b = AU.bus
@@ -560,8 +569,8 @@ li strong { color: var(--fg) }
     AU.base = c.currentTime + .05 - fromT
     // Music fades in with scene 2 and out over the end card.
     const mg = AU.music.gain, at = s => Math.max(c.currentTime, AU.base + s)
-    mg.setValueAtTime(fromT < 7 ? 0 : 1, c.currentTime)
-    if (fromT < 8.2) mg.linearRampToValueAtTime(1, at(8.2))
+    mg.setValueAtTime(fromT < 10 ? 0 : 1, c.currentTime)
+    if (fromT < 11.2) mg.linearRampToValueAtTime(1, at(11.2))
     mg.setValueAtTime(1, at(D - 2.5)); mg.linearRampToValueAtTime(0, at(D))
     EVENTS = buildEvents()
     AU.i = EVENTS.findIndex(e => e.t >= fromT); if (AU.i < 0) AU.i = EVENTS.length
@@ -583,7 +592,7 @@ li strong { color: var(--fg) }
   new ResizeObserver(fit).observe(frame); fit()
 
   // ---- playback
-  let t = 39.4, playing = false, last = 0
+  let t = 42.4, playing = false, last = 0
   const setPlaying = v => {
     playing = v; $('play').textContent = v ? '❚❚ Pause' : '▶ Play'
     if (v) { last = performance.now(); audioStart(t); requestAnimationFrame(tick) } else audioStop()
