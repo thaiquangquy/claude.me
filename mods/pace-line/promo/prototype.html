@@ -1,0 +1,436 @@
+<title>pace-line Promo Animatic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one 16:9 stage (the video, played back from a deterministic timeline) above a storyboard you read top to bottom.
+   Single dark theme on purpose: it is a terminal video, and the review page matches it. */
+:root {
+  color-scheme: dark;
+  --ink: #0d1117;        /* stage ground */
+  --panel: #151b24;      /* terminal window */
+  --line: #283141;       /* hairlines */
+  --fg: #e6e9ef;
+  --mute: #8a94a6;
+  --clay: #d97757;       /* Claude Code accent */
+  --green: #5bd08a;
+  --red: #f06a6a;
+  --yellow: #e8c35a;
+  --cyan: #6fd3e4;
+  --page: #0a0d12;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { background: var(--page); color: var(--fg); font: 15px/1.6 var(--body); padding-inline: 16px; padding-block: 24px 64px }
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 40px }
+header { display: grid; gap: 6px }
+header .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--clay) }
+h1 { font: 800 clamp(28px, 5vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--mute); max-width: 65ch }
+
+/* ---------- player ---------- */
+.player { display: grid; gap: 12px }
+.frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: var(--ink); border: 1px solid var(--line) }
+.stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; font-family: var(--mono); color: var(--fg); overflow: hidden;
+  background: radial-gradient(900px 500px at 70% 10%, #1a2232 0%, var(--ink) 60%) }
+.layer { position: absolute; inset: 0; opacity: 0 }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px }
+button { font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; cursor: pointer }
+button:hover { border-color: var(--mute) }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px }
+button[aria-pressed="true"] { border-color: var(--clay); color: var(--clay) }
+#play { min-width: 84px }
+#scrub { flex: 1 1 240px; min-width: 0; accent-color: var(--clay) }
+#clock { font: 500 13px/1 var(--mono); color: var(--mute); font-variant-numeric: tabular-nums }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chips button { padding: 7px 10px; font-size: 12px }
+
+/* ---------- terminal ---------- */
+.term { transform-origin: 18% 82%; position: absolute; left: 140px; top: 70px; width: 1000px; height: 520px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.45); overflow: hidden }
+.tbar { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid var(--line); color: var(--mute); font-size: 13px }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: #2c3442 }
+.tbar span:last-child { margin-left: 12px }
+.tbody { position: absolute; left: 28px; right: 28px; top: 62px; bottom: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 19px; line-height: 1.45 }
+.hist { display: flex; flex-direction: column; flex: 1; justify-content: flex-end; white-space: pre; line-height: 1.7 }
+.hist .u { color: var(--mute) }
+.hist .ok { color: var(--green) }
+.spin { color: var(--clay) }
+.err { border: 1px solid var(--red); color: var(--red); border-radius: 8px; padding: 10px 14px; background: rgba(240,106,106,.08) }
+.band { white-space: pre; font-size: 18px; line-height: 1.5; padding: 4px 0 }
+.c-cyan { color: var(--cyan) } .c-green { color: var(--green) } .c-red { color: var(--red) } .c-yellow { color: var(--yellow) } .dim { color: var(--mute) }
+.prompt { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; white-space: pre; min-height: 50px }
+.prompt .gt { color: var(--clay) }
+.caret { display: inline-block; width: 10px; height: 22px; background: var(--fg); vertical-align: -4px; margin-left: 1px }
+.menu { position: absolute; left: 28px; bottom: 92px; width: 420px; background: #1b2330; border: 1px solid var(--line); border-radius: 8px; padding: 8px; font-size: 17px }
+.menu div { padding: 6px 10px; border-radius: 5px; display: flex; justify-content: space-between }
+.menu div.on { background: rgba(217,119,87,.18); color: var(--clay) }
+.menu small { color: var(--mute); font-size: 14px }
+.pulse { animation: pulse 1s ease-in-out infinite }
+@keyframes pulse { 50% { opacity: .35 } }
+
+/* ---------- callouts (scene 4) ---------- */
+.call { position: absolute; font: 600 17px/1.2 var(--body); color: var(--fg); background: var(--clay); color: #1a0f0a; padding: 7px 11px; border-radius: 6px; white-space: nowrap }
+.call::after { content: ""; position: absolute; width: 2px; height: var(--stem, 26px); background: var(--clay); left: 18px; top: 100% }
+.call.below::after { top: auto; bottom: 100% }
+
+/* ---------- scene 2 ---------- */
+.s2 { display: grid; place-content: center; justify-items: center; gap: 18px; text-align: center }
+.big { font: 600 120px/1 var(--mono); letter-spacing: -.02em }
+.q { font: 800 64px/1 var(--display) }
+.sub { font: 400 26px/1.4 var(--body); color: var(--mute); max-width: 30ch }
+
+/* ---------- scene 3 ---------- */
+.s3 { padding: 60px 110px; display: grid; align-content: center; gap: 34px }
+.s3 h2 { font: 800 50px/1 var(--display); margin: 0 }
+.row { display: grid; gap: 10px }
+.row .lbl { font: 500 18px/1 var(--body); color: var(--mute) }
+.track { position: relative; height: 46px; border: 1px solid var(--line); border-radius: 8px; background: #121822; overflow: visible }
+.fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--clay); border-radius: 7px 0 0 7px }
+.fill b { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font: 600 18px/1 var(--mono); color: #1a0f0a }
+.now { position: absolute; top: -10px; bottom: -10px; width: 0; border-left: 2px dashed var(--fg) }
+.now i { position: absolute; top: 50%; transform: translateY(-50%); left: 8px; background: var(--ink); padding: 3px 6px; border-radius: 4px; font: 500 14px/1 var(--mono); font-style: normal; color: var(--fg); white-space: nowrap }
+.ticks { display: flex; justify-content: space-between; font: 400 13px/1 var(--mono); color: var(--mute) }
+.verdict { font: 600 24px/1.2 var(--mono) }
+.formula { font: 600 30px/1 var(--mono); color: var(--fg); border-top: 1px solid var(--line); padding-top: 22px }
+.formula em { color: var(--clay); font-style: normal }
+
+/* ---------- overlays ---------- */
+.cap { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font: 700 34px/1.2 var(--display); text-shadow: 0 2px 16px rgba(0,0,0,.8); opacity: 0 }
+.tag { position: absolute; left: 140px; top: 24px; font: 600 15px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--clay); opacity: 0 }
+.ff { position: absolute; right: 150px; top: 18px; font: 600 22px/1 var(--mono); background: var(--fg); color: var(--ink); padding: 8px 14px; border-radius: 6px; opacity: 0 }
+.end { display: grid; place-content: center; justify-items: center; gap: 22px; text-align: center }
+.mark { font: 800 120px/1 var(--display); letter-spacing: -.03em }
+.mark span { color: var(--clay) }
+.tagline { font: 500 32px/1 var(--body); color: var(--mute) }
+.cmd { font: 500 22px/1 var(--mono); border: 1px solid var(--line); background: var(--panel); padding: 16px 22px; border-radius: 8px }
+.cmd .gt { color: var(--clay) }
+.repo { font: 400 18px/1 var(--mono); color: var(--mute) }
+
+.poster { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10,13,18,.35); cursor: pointer; border: 0; border-radius: 0; padding: 0 }
+.poster span { font: 600 15px/1 var(--mono); background: var(--clay); color: #1a0f0a; padding: 14px 20px; border-radius: 999px }
+
+/* ---------- storyboard ---------- */
+section { display: grid; gap: 16px }
+h2.sec { font: 700 26px/1.15 var(--display); margin: 0 }
+section > p { margin: 0; max-width: 70ch; color: #c5cbd6 }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line) }
+th { font: 600 12px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); background: #10151d }
+tr:last-child td { border-bottom: 0 }
+td.t { font-family: var(--mono); color: var(--clay); white-space: nowrap; font-variant-numeric: tabular-nums }
+td code, li code, p code { font-family: var(--mono); font-size: .92em; color: var(--cyan) }
+.dirs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px }
+.dir { border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 8px; align-content: start }
+.dir.pick { border-color: var(--clay) }
+.dir h3 { margin: 0; font: 700 18px/1.2 var(--display) }
+.dir .pill { justify-self: start; font: 600 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #1a0f0a; background: var(--clay); padding: 5px 8px; border-radius: 4px }
+.dir p { margin: 0; color: #c5cbd6; font-size: 14px }
+ol, ul { margin: 0; padding-left: 22px; display: grid; gap: 10px; max-width: 75ch; color: #c5cbd6 }
+li strong { color: var(--fg) }
+@media (prefers-reduced-motion: reduce) { .pulse { animation: none } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">pace-line · promo · animatic v1</div>
+    <h1>Hit the wall, or see it coming</h1>
+    <p>A 42-second rough cut of the promo, timed scene by scene. Scrub it, jump to a scene, then read the storyboard and the open calls below.</p>
+  </header>
+
+  <div class="player">
+    <div class="frame" id="frame">
+      <div class="stage" id="stage">
+
+        <!-- Terminal (scenes 1, 4, 5) -->
+        <div class="layer" id="L-term">
+          <div class="term">
+            <div class="tbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>claude — ~/code/claude.me</span></div>
+            <div class="tbody">
+              <div class="hist" id="hist"></div>
+              <div class="spin" id="spin"></div>
+              <div class="err" id="err">⎿ You've hit your 5-hour limit · resets 3:00 PM</div>
+              <div class="band" id="band"></div>
+              <div class="prompt" id="prompt"><span class="gt">&gt; </span><span id="typed"></span><span class="caret" id="caret"></span></div>
+            </div>
+            <div class="menu" id="menu">
+              <div data-i="0"><span>Opus 5.5</span><small>most capable</small></div>
+              <div data-i="1"><span>Sonnet 5.5</span><small>lighter on usage</small></div>
+              <div data-i="2"><span>Haiku 5.5</span><small>fastest</small></div>
+            </div>
+          </div>
+          <div class="call" id="c1">used</div>
+          <div class="call" id="c2">pace vs. an even burn</div>
+          <div class="call" id="c3">resets in</div>
+          <div class="call" id="c4">same for the week</div>
+        </div>
+
+        <!-- Scene 2 -->
+        <div class="layer s2" id="L-s2">
+          <div class="big" id="s2a">5h 35%</div>
+          <div class="q" id="s2b">Good or bad?</div>
+          <div class="sub" id="s2c">A usage meter says what you spent. It can't say if you'll last until the reset.</div>
+        </div>
+
+        <!-- Scene 3 -->
+        <div class="layer s3" id="L-s3">
+          <h2>Same 35%. Two very different days.</h2>
+          <div class="row" id="rowA">
+            <div class="lbl">Session A · 1h into the 5h window</div>
+            <div class="track"><div class="fill" id="fA"><b>35%</b></div><div class="now" id="nA"><i>now · 1h</i></div></div>
+            <div class="ticks"><span>0h</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span></div>
+            <div class="verdict c-red" id="vA">⇡15% ahead of pace → limit in ~1h 50m, reset in 4h</div>
+          </div>
+          <div class="row" id="rowB">
+            <div class="lbl">Session B · 4h into the 5h window</div>
+            <div class="track"><div class="fill" id="fB"><b>35%</b></div><div class="now" id="nB"><i>now · 4h</i></div></div>
+            <div class="ticks"><span>0h</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span></div>
+            <div class="verdict c-green" id="vB">⇣45% behind pace → plenty left, keep going</div>
+          </div>
+          <div class="formula" id="form">pace = <em>used %</em> − <em>time elapsed %</em></div>
+        </div>
+
+        <!-- End card -->
+        <div class="layer end" id="L-end">
+          <div class="mark">pace<span>-</span>line</div>
+          <div class="tagline">Pace, not just usage.</div>
+          <div class="cmd"><span class="gt">&gt; </span>/plugin install pace-line --marketplace thaiquangquy/claude.me</div>
+          <div class="repo">A Claude Code mod · github.com/thaiquangquy/claude.me</div>
+        </div>
+
+        <div class="tag" id="tag">Take two · same session</div>
+        <div class="ff" id="ff">⏩ +1h 40m</div>
+        <div class="cap" id="cap"></div>
+      </div>
+      <button class="poster" id="poster" aria-label="Play the animatic from the start"><span>▶ Play from start</span></button>
+    </div>
+
+    <div class="controls">
+      <button id="play" aria-label="Play or pause">▶ Play</button>
+      <input id="scrub" type="range" min="0" max="42" step="0.01" value="0" aria-label="Timeline">
+      <span id="clock">00.0 / 42.0s</span>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <section>
+    <h2 class="sec">Storyboard</h2>
+    <p>No voiceover. On-screen captions carry the story so it works muted in a feed; keyboard clicks and one low synth note on the error carry the sound.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Time</th><th>Scene</th><th>On screen</th><th>Caption</th><th>Why it's there</th></tr></thead>
+        <tbody>
+          <tr><td class="t">0–7s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code>, Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
+          <tr><td class="t">7–12s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
+          <tr><td class="t">12–22s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
+          <tr><td class="t">22–29s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
+          <tr><td class="t">29–38s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Fast-forward <code>+1h 40m</code>: pace slides to <code>⇣3%</code> green. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
+          <tr><td class="t">38–42s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td>One action: copy the install line.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Where I changed your outline</h2>
+    <ol>
+      <li><strong>The ending is now a rewind, not a recovery.</strong> Your outline hits the limit, then switches model and continues. On Pro/Max the 5-hour limit is shared across models, so once you hit it, switching to Sonnet won't get you a green check, and a promo that implies it will draws “that's not how it works” comments. The honest and stronger story: scene 5 replays the same session with pace-line on, you see red <em>before</em> the wall, switch, and never hit it.</li>
+      <li><strong>Pace only recovers with time.</strong> Pace is used % minus elapsed %, and used never goes down. So the green check needs a visible time jump. The numbers in scene 5 are real: 58% used at 36% elapsed is <code>⇡22%</code>; after 1h 40m on Sonnet, 66% used at 69% elapsed is <code>⇣3%</code>.</li>
+      <li><strong>The body teaches with a contrast, not a definition.</strong> “Is 35% good?” has no answer until you add the clock. Two bars at the same 35% with different “now” markers make that click in one look; the formula comes after, as confirmation.</li>
+      <li><strong>The 7-day limit gets one callout, no more.</strong> It's the same mechanic, and a second story would push past 45 seconds.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="sec">Style direction</h2>
+    <div class="dirs">
+      <div class="dir pick"><span class="pill">Recommended · in the cut</span><h3>Terminal-native</h3><p>Real Claude Code UI, monospace, the band's own green/red/cyan. Kinetic type only between terminal scenes. Viewers recognize their own tool, so the problem reads as theirs. Cheapest to build and to keep accurate as the UI changes.</p></div>
+      <div class="dir"><h3>Trip computer</h3><p>Dashboard metaphor: fuel gauge (usage) vs. “range at current speed” (pace). Instantly clear to non-devs, but it takes the viewer out of the terminal and costs more in illustration.</p></div>
+      <div class="dir"><h3>Paceline</h3><p>Cycling: riders in a line, the leader burns out by going too hard. Fits the name, but it is a second idea viewers must decode in a 40s spot.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Decide before the final cut</h2>
+    <ol>
+      <li><strong>Format.</strong> I'd ship 16:9 as master and a 9:16 cut for Shorts/Reels/TikTok, with the terminal cropped to the band and prompt. (Default: both.)</li>
+      <li><strong>Length.</strong> 42s now. A 25s cut drops scene 2 and shortens scene 3. (Default: keep 42s; cut 25s later if it underperforms.)</li>
+      <li><strong>Build tool.</strong> Remotion (React, renders MP4 from code, same timeline logic as this page) vs. hand-animating in an editor. (Default: Remotion, committed under <code>mods/pace-line/promo/</code>.)</li>
+      <li><strong>Voiceover.</strong> Captions only, or add your voice? (Default: captions only; your VO is a strong option for a Vietnamese version.)</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(() => {
+  const D = 42
+  const SCENES = [
+    ['The wall', 0], ['The question', 7], ['Two stories', 12], ['Meet pace-line', 22], ['Take two', 29], ['End card', 38],
+  ]
+  const $ = id => document.getElementById(id)
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x))
+  const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
+  const seg = (t, a, b) => ease(clamp((t - a) / (b - a)))
+  const vis = (t, a, b, f = .35) => (t < a || t > b) ? 0 : Math.min(seg(t, a, a + f), 1 - seg(t, b - f, b))
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+
+  // Mirrors format.ts: level colors and pace segments.
+  const lvl = p => p >= 90 ? 'c-red' : p >= 70 ? 'c-yellow' : 'c-green'
+  const usage = (used, elapsedPct, rmLabel, pulse = false) => {
+    const d = used - elapsedPct
+    let s = `<span class="${lvl(used)}">${used}%</span>`
+    if (d > 0) s += ` <span class="c-red${pulse ? ' pulse' : ''}">⇡${d}%</span>`
+    if (d < 0) s += ` <span class="c-green">⇣${-d}%</span>`
+    return s + ` <span class="dim">${rmLabel}</span>`
+  }
+  const rm = m => m >= 1440 ? `${Math.trunc(m / 1440)}d` : m >= 60 ? `${Math.trunc(m / 60)}h` : `${m}m`
+  function band({ model, effort, ctx, u5, e5, m5, u7, e7, m7, pulse }) {
+    const left1 = `${model} (1M) ${effort}`
+    const filled = Math.trunc(ctx / 10)
+    const bar = '█'.repeat(filled) + '░'.repeat(10 - filled)
+    const left2 = `${bar} ${ctx}% 1M`
+    const w = Math.max(left1.length, left2.length)
+    const sep = ' <span class="dim">|</span>  '
+    const l1 = `<span class="c-cyan">${left1}</span>${' '.repeat(w - left1.length)}${sep}claude.me (main) 3f <span class="c-green">+42</span> <span class="c-red">-7</span>`
+    const five = usage(u5, e5, rm(m5), pulse)
+    const l2 = `<span class="${lvl(ctx)}">${bar}</span> ${ctx}% 1M${' '.repeat(w - left2.length)}${sep}<span id="b5">5h ${five}</span>  <span id="b7">7d ${usage(u7, e7, rm(m7))}</span>`
+    return l1 + '\n' + l2
+  }
+
+  const CMD1 = 'refactor the auth module and add tests'
+  const SPIN = ['✻', '✶', '✳', '✢']
+  const typeOut = (s, t, a, b) => s.slice(0, Math.round(clamp((t - a) / (b - a)) * s.length))
+
+  const stage = $('stage'), frame = $('frame')
+  const op = (id, v) => { $(id).style.opacity = v }
+  let lastBand = '', lastHist = ''
+
+  function render(t) {
+    // ---- layers
+    op('L-term', Math.max(vis(t, 0, 7), vis(t, 22, 38)))
+    op('L-s2', vis(t, 7, 12))
+    op('L-s3', vis(t, 12, 22))
+    op('L-end', vis(t, 38, D + 1))
+
+    // ---- terminal content per scene
+    let hist = '', typed = '', spin = '', err = 0, bandHTML = '', bandOp = 0, menu = -1, caret = true
+    if (t < 7) {
+      if (t < 3.2) typed = typeOut(CMD1, t, .6, 2.9)
+      else hist = `<span class="u">&gt; ${CMD1}</span>`
+      if (t >= 3.3 && t < 5) spin = `${SPIN[Math.floor(t * 8) % 4]} Refactoring… (${Math.floor((t - 3.3) * 7 + 1)}s · ↓ 2.1k tokens)`
+      if (t >= 5) hist += `\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
+      err = seg(t, 5, 5.3)
+    } else if (t < 29) {
+      hist = `<span class="u">&gt; plan the auth refactor</span>\n<span class="ok">⏺</span> Plan ready: 4 steps, 6 files`
+      bandHTML = band({ model: 'Opus 5.5', effort: 'high', ctx: 42, u5: 35, e5: 20, m5: 240, u7: 61, e7: 57, m7: 4320 })
+      bandOp = seg(t, 23, 23.6)
+    } else {
+      hist = `<span class="u">&gt; ${CMD1}</span>\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
+      let model = 'Opus 5.5', effort = 'high', p = 0
+      if (t >= 30.4 && t < 33.4) { typed = typeOut('/model', t, 30.4, 31.1); menu = t >= 31.3 ? (t >= 32.4 ? 1 : 0) : -1 }
+      if (t >= 33.4) { model = 'Sonnet 5.5'; effort = '–'; hist += `\n<span class="dim">⎿ Set model to Sonnet 5.5</span>` }
+      if (t >= 34) p = seg(t, 34, 36)
+      const u5 = Math.round(58 + 8 * p), e5 = Math.round(36 + 33 * p), m5 = Math.round(192 - 100 * p)
+      if (t >= 36.4) hist += `\n<span class="ok">✓ Auth refactor done · 14 tests passing</span>`
+      bandHTML = band({ model, effort, ctx: 64, u5, e5, m5, u7: 62, e7: 58, m7: 4250, pulse: t < 33.4 })
+      bandOp = 1
+    }
+    if (hist !== lastHist) { $('hist').innerHTML = `<div>${hist}</div>`; lastHist = hist }
+    if (bandHTML !== lastBand) { $('band').innerHTML = bandHTML; lastBand = bandHTML }
+    $('band').style.opacity = bandOp
+    $('band').style.transform = `translateY(${(1 - bandOp) * 14}px)`
+    $('typed').textContent = typed
+    $('spin').textContent = spin
+    $('spin').hidden = !spin
+    $('err').hidden = err === 0
+    $('err').style.opacity = err
+    $('caret').style.opacity = caret && (Math.floor(t * 2.2) % 2 === 0 || typed) ? 1 : 0
+    $('menu').hidden = menu < 0
+    document.querySelectorAll('#menu div').forEach(d => d.classList.toggle('on', +d.dataset.i === menu))
+
+    // ---- scene 4: zoom onto the band, then callouts on the live band spans
+    const z = t >= 22 && t < 29 ? 1 + .75 * (seg(t, 23.8, 24.5) - seg(t, 28.2, 28.9)) : 1
+    document.querySelector('.term').style.transform = `scale(${z})`
+    // [id, appears at, host span, which part, above (-) or below (+) the band, stem length]
+    const calls = [['c1', 24.6, 'b5', 0, -1, 62], ['c2', 25.3, 'b5', 1, -1, 112], ['c3', 26, 'b5', 2, 1, 26], ['c4', 26.7, 'b7', 0, 1, 78]]
+    for (const [id, at, host, idx, side, stem] of calls) {
+      const el = $(id), o = Math.min(seg(t, at, at + .3), 1 - seg(t, 28.6, 29))
+      el.style.opacity = t >= 22 && t < 29 ? o : 0
+      const h = $(host)
+      if (h && el.style.opacity > 0) {
+        const spans = h.querySelectorAll('span')
+        const target = idx === 0 ? spans[0] : idx === 1 ? (spans.length > 2 ? spans[1] : spans[0]) : spans[spans.length - 1]
+        const r = target.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / 1280
+        el.classList.toggle('below', side > 0)
+        el.style.setProperty('--stem', `${stem}px`)
+        el.style.left = `${(r.left - s.left) / k + r.width / k / 2 - 19}px`
+        el.style.top = side < 0 ? `${(r.top - s.top) / k - 34 - stem}px` : `${(r.bottom - s.top) / k + stem}px`
+      }
+    }
+
+    // ---- scene 2
+    op('s2a', seg(t, 7.3, 7.8)); op('s2b', seg(t, 8.5, 9)); op('s2c', seg(t, 9.8, 10.3))
+    $('s2a').style.transform = `scale(${1.08 - .08 * seg(t, 7.3, 8)})`
+
+    // ---- scene 3
+    const g = seg(t, 13, 14.6)
+    $('fA').style.width = `${35 * g}%`; $('fB').style.width = `${35 * g}%`
+    $('nA').style.left = `${20 * seg(t, 14.4, 15.4)}%`; $('nB').style.left = `${80 * seg(t, 15, 16.2)}%`
+    op('nA', seg(t, 14.4, 14.6)); op('nB', seg(t, 15, 15.2))
+    op('vA', seg(t, 16, 16.4)); op('vB', seg(t, 17, 17.4)); op('form', seg(t, 18.8, 19.3))
+
+    // ---- overlays
+    op('tag', vis(t, 29.1, 37.8))
+    op('ff', vis(t, 33.8, 36.4, .2))
+    const p = seg(t, 34, 36)
+    $('ff').textContent = `⏩ +${Math.floor(100 * p / 60)}h ${String(Math.round(100 * p) % 60).padStart(2, '0')}m`
+    const caps = [
+      [5.4, 7, 'Mid-task. Zero warning.'],
+      [23, 28.7, 'pace-line: your pace, right above the prompt.'],
+      [29.2, 31.2, 'This time you see it coming.'],
+      [33.8, 36.2, 'Lighter model. Slower burn.'],
+      [36.5, 38, 'Task done. Limit never hit.'],
+    ]
+    const c = caps.find(([a, b]) => t >= a && t <= b)
+    $('cap').textContent = c ? c[2] : ''
+    $('cap').style.opacity = c ? vis(t, c[0], c[1], .25) : 0
+
+    // ---- controls
+    $('scrub').value = t
+    $('clock').textContent = `${t.toFixed(1).padStart(4, '0')} / ${D.toFixed(1)}s`
+    const cur = SCENES.reduce((i, s, j) => t >= s[1] ? j : i, 0)
+    document.querySelectorAll('#chips button').forEach((b, j) => b.setAttribute('aria-pressed', String(j === cur)))
+  }
+
+  // ---- scaling
+  const fit = () => { stage.style.transform = `scale(${frame.clientWidth / 1280})` }
+  new ResizeObserver(fit).observe(frame); fit()
+
+  // ---- playback
+  let t = 27.6, playing = false, last = 0
+  const setPlaying = v => { playing = v; $('play').textContent = v ? '❚❚ Pause' : '▶ Play'; if (v) { last = performance.now(); requestAnimationFrame(tick) } }
+  function tick(now) {
+    if (!playing) return
+    t += (now - last) / 1000; last = now
+    if (t >= D) { t = D; render(t); setPlaying(false); return }
+    render(t); requestAnimationFrame(tick)
+  }
+  const start = () => { $('poster').hidden = true; if (t >= D - .05) t = 0; setPlaying(true) }
+  $('poster').onclick = () => { t = 0; start() }
+  $('play').onclick = () => { $('poster').hidden = true; playing ? setPlaying(false) : start() }
+  $('scrub').oninput = e => { $('poster').hidden = true; t = +e.target.value; render(t) }
+  SCENES.forEach(([name, at], i) => {
+    const b = document.createElement('button')
+    b.textContent = `${i + 1} · ${name}`
+    b.onclick = () => { $('poster').hidden = true; t = at; render(t); if (!playing) setPlaying(true) }
+    $('chips').appendChild(b)
+  })
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); $('play').click() } })
+  document.fonts?.ready.then(() => render(t))
+  render(t)
+})()
+</script>
