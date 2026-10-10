@@ -46,6 +46,10 @@ button[aria-pressed="true"] { border-color: var(--clay); color: var(--clay) }
 #play { min-width: 84px }
 #scrub { flex: 1 1 240px; min-width: 0; accent-color: var(--clay) }
 #clock { font: 500 13px/1 var(--mono); color: var(--mute); font-variant-numeric: tabular-nums }
+.seg { display: flex }
+.seg button { border-radius: 0 } .seg button:first-child { border-radius: 6px 0 0 6px } .seg button:last-child { border-radius: 0 6px 6px 0; margin-left: -1px }
+.kbd { display: flex; align-items: center; gap: 8px; font: 500 13px/1 var(--mono); color: var(--mute) }
+select { font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; max-width: 100% }
 .chips { display: flex; flex-wrap: wrap; gap: 6px }
 .chips button { padding: 7px 10px; font-size: 12px }
 
@@ -139,7 +143,7 @@ li strong { color: var(--fg) }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">pace-line · promo · animatic v2</div>
+    <div class="eyebrow">pace-line · promo · animatic v3</div>
     <h1>Hit the wall, or see it coming</h1>
     <p>A 63-second rough cut with sound. Press play (sound needs a click to start), scrub, or jump to a scene, then read the storyboard and the open calls below.</p>
   </header>
@@ -165,46 +169,46 @@ li strong { color: var(--fg) }
               <div data-i="2"><span>Haiku 5.5</span><small>fastest</small></div>
             </div>
           </div>
-          <div class="call" id="c1">used</div>
-          <div class="call" id="c2">pace vs. an even burn</div>
-          <div class="call" id="c3">resets in</div>
-          <div class="call" id="c4">same for the week</div>
+          <div class="call" id="c1" data-i18n="c1">used</div>
+          <div class="call" id="c2" data-i18n="c2">pace vs. an even burn</div>
+          <div class="call" id="c3" data-i18n="c3">resets in</div>
+          <div class="call" id="c4" data-i18n="c4">same for the week</div>
         </div>
 
         <!-- Scene 2 -->
         <div class="layer s2" id="L-s2">
           <div class="big" id="s2a">5h 35%</div>
-          <div class="q" id="s2b">Good or bad?</div>
-          <div class="sub" id="s2c">A usage meter says what you spent. It can't say if you'll last until the reset.</div>
+          <div class="q" id="s2b" data-i18n="s2b">Good or bad?</div>
+          <div class="sub" id="s2c" data-i18n="s2c">A usage meter says what you spent. It can't say if you'll last until the reset.</div>
         </div>
 
         <!-- Scene 3 -->
         <div class="layer s3" id="L-s3">
-          <h2>Same 35%. Two very different days.</h2>
+          <h2 data-i18n="s3h">Same 35%. Two very different days.</h2>
           <div class="row" id="rowA">
-            <div class="lbl">Session A · 1h into the 5h window</div>
-            <div class="track"><div class="fill" id="fA"><b>35%</b></div><div class="now" id="nA"><i>now · 1h</i></div></div>
+            <div class="lbl" data-i18n="lblA">Session A · 1h into the 5h window</div>
+            <div class="track"><div class="fill" id="fA"><b>35%</b></div><div class="now" id="nA"><i data-i18n="nowA">now · 1h</i></div></div>
             <div class="ticks"><span>0h</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span></div>
-            <div class="verdict c-red" id="vA">⇡15% ahead of pace → limit in ~1h 50m, reset in 4h</div>
+            <div class="verdict c-red" id="vA" data-i18n="vA">⇡15% ahead of pace → limit in ~1h 50m, reset in 4h</div>
           </div>
           <div class="row" id="rowB">
-            <div class="lbl">Session B · 4h into the 5h window</div>
-            <div class="track"><div class="fill" id="fB"><b>35%</b></div><div class="now" id="nB"><i>now · 4h</i></div></div>
+            <div class="lbl" data-i18n="lblB">Session B · 4h into the 5h window</div>
+            <div class="track"><div class="fill" id="fB"><b>35%</b></div><div class="now" id="nB"><i data-i18n="nowB">now · 4h</i></div></div>
             <div class="ticks"><span>0h</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span></div>
-            <div class="verdict c-green" id="vB">⇣45% behind pace → plenty left, keep going</div>
+            <div class="verdict c-green" id="vB" data-i18n="vB">⇣45% behind pace → plenty left, keep going</div>
           </div>
-          <div class="formula" id="form">pace = <em>used %</em> − <em>time elapsed %</em></div>
+          <div class="formula" id="form" data-i18n="form">pace = <em>used %</em> − <em>time elapsed %</em></div>
         </div>
 
         <!-- End card -->
         <div class="layer end" id="L-end">
           <div class="mark">pace<span>-</span>line</div>
-          <div class="tagline">Pace, not just usage.</div>
+          <div class="tagline" data-i18n="tagline">Pace, not just usage.</div>
           <div class="cmd"><span class="gt">&gt; </span>/plugin install pace-line --marketplace thaiquangquy/claude.me</div>
-          <div class="repo">A Claude Code mod · github.com/thaiquangquy/claude.me</div>
+          <div class="repo" data-i18n="repo">A Claude Code mod · github.com/thaiquangquy/claude.me</div>
         </div>
 
-        <div class="tag" id="tag">Take two · same session</div>
+        <div class="tag" id="tag" data-i18n="tag">Take two · same session</div>
         <div class="ff" id="ff"><div id="ffT">▸▸ +0h 00m</div><div id="ffB"></div></div>
         <div class="cap" id="cap"></div>
       </div>
@@ -217,22 +221,35 @@ li strong { color: var(--fg) }
       <span id="clock">00.0 / 63.0s</span>
       <button id="mute" aria-pressed="false" aria-label="Sound on or off">🔊 Sound on</button>
     </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Language">
+        <button id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+        <button id="lang-vi" data-lang="vi" aria-pressed="false">VI · Tiếng Việt</button>
+      </div>
+      <label class="kbd" for="kbd">Keyboard
+        <select id="kbd">
+          <option value="thock">Mechanical · thocky (brown)</option>
+          <option value="clicky">Mechanical · clicky (blue)</option>
+          <option value="laptop">Laptop · soft scissor</option>
+        </select>
+      </label>
+    </div>
     <div class="chips" id="chips"></div>
   </div>
 
   <section>
     <h2 class="sec">Storyboard</h2>
-    <p>No voiceover. On-screen captions carry the story so it works muted in a feed. Sound, all synthesized in the browser for now: keyboard clicks on every keystroke, a low detuned synth note on the limit error, then a 100 BPM minor-key synth bed (bass, arpeggio, soft kick) that enters with scene 2. A whoosh rides the fast-forward and a two-note chime lands on the green check.</p>
+    <p>No voiceover. On-screen captions carry the story so it works muted in a feed. The VI toggle swaps every caption, label and the typed prompt to Vietnamese; Claude Code's own UI (the limit error, the model menu, tool output) stays English, as it is in the real product. Sound, all synthesized in the browser for now: keyboard sound on every keystroke (three switch styles to compare: thocky brown, clicky blue, soft laptop), a low detuned synth note on the limit error, then a 100 BPM minor-key synth bed (bass, arpeggio, soft kick) that enters with scene 2. A whoosh rides the fast-forward and a two-note chime lands on the green check.</p>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Time</th><th>Scene</th><th>On screen</th><th>Caption</th><th>Why it's there</th></tr></thead>
+        <thead><tr><th>Time</th><th>Scene</th><th>On screen</th><th>Caption</th><th>Phụ đề (VI)</th><th>Why it's there</th></tr></thead>
         <tbody>
-          <tr><td class="t">0–7s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code>, Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
-          <tr><td class="t">7–17s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
-          <tr><td class="t">17–33s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
-          <tr><td class="t">33–45s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
-          <tr><td class="t">45–58s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Terminal blurs; a centered <code>+1h 40m</code> fast-forward card shows the 5h pace sliding to <code>⇣3%</code> green. Blur clears on the green band. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
-          <tr><td class="t">58–63s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td>One action: copy the install line.</td></tr>
+          <tr><td class="t">0–7s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code> (VI: <code lang="vi">refactor module auth và viết thêm test</code>), Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td lang="vi">Đang làm dở. Không một lời cảnh báo.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
+          <tr><td class="t">7–17s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td lang="vi">Ổn hay không ổn? Thanh usage chỉ cho biết bạn đã dùng bao nhiêu. Nó không cho biết bạn có trụ được tới lúc reset hay không.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
+          <tr><td class="t">17–33s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td lang="vi">Cùng 35%. Hai ngày làm việc khác hẳn nhau.</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
+          <tr><td class="t">33–45s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td lang="vi">pace-line: nhịp dùng quota, ngay trên ô prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
+          <tr><td class="t">45–58s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Terminal blurs; a centered <code>+1h 40m</code> fast-forward card shows the 5h pace sliding to <code>⇣3%</code> green. Blur clears on the green band. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td lang="vi">Lần này, bạn thấy trước. → Model nhẹ hơn. Hao quota chậm hơn. → Xong việc. Không chạm limit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
+          <tr><td class="t">58–63s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td lang="vi">Xem nhịp, không chỉ xem %.</td><td>One action: copy the install line.</td></tr>
         </tbody>
       </table>
     </div>
@@ -263,7 +280,7 @@ li strong { color: var(--fg) }
       <li><strong>Format.</strong> I'd ship 16:9 as master and a 9:16 cut for Shorts/Reels/TikTok, with the terminal cropped to the band and prompt. (Default: both.)</li>
       <li><strong>Length.</strong> 63s now, paced for reading. A 30s social cut drops scene 2 and the 7d callout. (Default: 63s master, 30s cut for Shorts.)</li>
       <li><strong>Build tool.</strong> Remotion (React, renders MP4 from code, same timeline logic as this page) vs. hand-animating in an editor. (Default: Remotion, committed under <code>mods/pace-line/promo/</code>.)</li>
-      <li><strong>Voiceover.</strong> Captions only, or add your voice? (Default: captions only; your VO is a strong option for a Vietnamese version.)</li>
+      <li><strong>Vietnamese final.</strong> Captions in Vietnamese, with or without your voice reading them? (Default: captions only for the first cut; add your VO if the clip leads your channel.)</li>
     </ol>
   </section>
 </div>
@@ -304,7 +321,38 @@ li strong { color: var(--fg) }
     return l1 + '\n' + l2
   }
 
-  const CMD1 = 'refactor the auth module and add tests'
+  // Claude Code's own UI (errors, menus, tool output) stays English as it is in the product;
+  // everything the video adds, and what the user types, follows the language.
+  const STR = {
+    en: {
+      cmd: 'refactor the auth module and add tests', plan: 'plan the auth refactor',
+      c1: 'used', c2: 'pace vs. an even burn', c3: 'resets in', c4: 'same for the week',
+      s2b: 'Good or bad?', s2c: "A usage meter says what you spent. It can't say if you'll last until the reset.",
+      s3h: 'Same 35%. Two very different days.',
+      lblA: 'Session A · 1h into the 5h window', lblB: 'Session B · 4h into the 5h window', nowA: 'now · 1h', nowB: 'now · 4h',
+      vA: '⇡15% ahead of pace → limit in ~1h 50m, reset in 4h', vB: '⇣45% behind pace → plenty left, keep going',
+      form: 'pace = <em>used %</em> − <em>time elapsed %</em>',
+      tagline: 'Pace, not just usage.', repo: 'A Claude Code mod · github.com/thaiquangquy/claude.me', tag: 'Take two · same session',
+      ff: 'on Sonnet 5.5 ·',
+      cap1: 'Mid-task. Zero warning.', cap2: 'pace-line: your pace, right above the prompt.', cap3: 'This time you see it coming.',
+      cap4: 'Lighter model. Slower burn.', cap5: 'Task done. Limit never hit.',
+    },
+    vi: {
+      cmd: 'refactor module auth và viết thêm test', plan: 'lên kế hoạch refactor auth',
+      c1: 'đã dùng', c2: 'nhịp so với dùng đều', c3: 'reset sau', c4: 'tương tự cho 7 ngày',
+      s2b: 'Ổn hay không ổn?', s2c: 'Thanh usage chỉ cho biết bạn đã dùng bao nhiêu. Nó không cho biết bạn có trụ được tới lúc reset hay không.',
+      s3h: 'Cùng 35%. Hai ngày làm việc khác hẳn nhau.',
+      lblA: 'Phiên A · mới 1h trong khung 5h', lblB: 'Phiên B · đã 4h trong khung 5h', nowA: 'đang ở 1h', nowB: 'đang ở 4h',
+      vA: '⇡15% nhanh hơn nhịp → chạm limit sau ~1h 50m, reset sau 4h', vB: '⇣45% chậm hơn nhịp → còn dư nhiều, cứ làm tiếp',
+      form: 'pace = <em>% đã dùng</em> − <em>% thời gian đã trôi</em>',
+      tagline: 'Xem nhịp, không chỉ xem %.', repo: 'Một mod cho Claude Code · github.com/thaiquangquy/claude.me', tag: 'Làm lại · cùng phiên đó',
+      ff: 'với Sonnet 5.5 ·',
+      cap1: 'Đang làm dở. Không một lời cảnh báo.', cap2: 'pace-line: nhịp dùng quota, ngay trên ô prompt.', cap3: 'Lần này, bạn thấy trước.',
+      cap4: 'Model nhẹ hơn. Hao quota chậm hơn.', cap5: 'Xong việc. Không chạm limit.',
+    },
+  }
+  let lang = 'en'
+  const S = k => STR[lang][k]
   const SPIN = ['✻', '✶', '✳', '✢']
   const typeOut = (s, t, a, b) => s.slice(0, Math.round(clamp((t - a) / (b - a)) * s.length))
 
@@ -323,17 +371,17 @@ li strong { color: var(--fg) }
     let hist = '', typed = '', spin = '', err = 0, bandHTML = '', bandOp = 0, menu = -1, caret = true
     let u5 = 58, e5 = 36, m5 = 192
     if (t < 7) {
-      if (t < 3.2) typed = typeOut(CMD1, t, .6, 2.9)
-      else hist = `<span class="u">&gt; ${CMD1}</span>`
+      if (t < 3.2) typed = typeOut(S('cmd'), t, .6, 2.9)
+      else hist = `<span class="u">&gt; ${S('cmd')}</span>`
       if (t >= 3.3 && t < 5) spin = `${SPIN[Math.floor(t * 8) % 4]} Refactoring… (${Math.floor((t - 3.3) * 7 + 1)}s · ↓ 2.1k tokens)`
       if (t >= 5) hist += `\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
       err = seg(t, 5, 5.3)
     } else if (t < 45) {
-      hist = `<span class="u">&gt; plan the auth refactor</span>\n<span class="ok">⏺</span> Plan ready: 4 steps, 6 files`
+      hist = `<span class="u">&gt; ${S('plan')}</span>\n<span class="ok">⏺</span> Plan ready: 4 steps, 6 files`
       bandHTML = band({ model: 'Opus 5.5', effort: 'high', ctx: 42, u5: 35, e5: 20, m5: 240, u7: 61, e7: 57, m7: 4320 })
       bandOp = seg(t, 34, 34.6)
     } else {
-      hist = `<span class="u">&gt; ${CMD1}</span>\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
+      hist = `<span class="u">&gt; ${S('cmd')}</span>\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
       let model = 'Opus 5.5', effort = 'high'
       if (t >= 48 && t < 51.8) { typed = typeOut('/model', t, 48, 49); menu = t >= 49.2 ? (t >= 50.6 ? 1 : 0) : -1 }
       if (t >= 51.8) { model = 'Sonnet 5.5'; effort = '–'; hist += `\n<span class="dim">⎿ Set model to Sonnet 5.5</span>` }
@@ -394,13 +442,13 @@ li strong { color: var(--fg) }
     op('ff', blur)
     const ffMin = Math.round(100 * seg(t, 52.8, 55.4))
     $('ffT').textContent = `▸▸ +${Math.floor(ffMin / 60)}h ${String(ffMin % 60).padStart(2, '0')}m`
-    $('ffB').innerHTML = `<span class="dim">on Sonnet 5.5 ·</span> 5h ${usage(u5, e5, rm(m5))}`
+    $('ffB').innerHTML = `<span class="dim">${S('ff')}</span> 5h ${usage(u5, e5, rm(m5))}`
     const caps = [
-      [5.4, 7, 'Mid-task. Zero warning.'],
-      [34.2, 44.6, 'pace-line: your pace, right above the prompt.'],
-      [45.3, 47.8, 'This time you see it coming.'],
-      [52.4, 55.8, 'Lighter model. Slower burn.'],
-      [56.4, 58, 'Task done. Limit never hit.'],
+      [5.4, 7, S('cap1')],
+      [34.2, 44.6, S('cap2')],
+      [45.3, 47.8, S('cap3')],
+      [52.4, 55.8, S('cap4')],
+      [56.4, 58, S('cap5')],
     ]
     const c = caps.find(([a, b]) => t >= a && t <= b)
     $('cap').textContent = c ? c[2] : ''
@@ -414,11 +462,12 @@ li strong { color: var(--fg) }
   }
 
   // ---- sound: synthesized with Web Audio, scheduled on the same timeline as the picture
-  const AU = { ctx: null, bus: null, noise: null, muted: false, base: 0, i: 0, timer: 0 }
-  const EVENTS = (() => {
+  const AU = { kbd: 'thock', ctx: null, bus: null, noise: null, muted: false, base: 0, i: 0, timer: 0 }
+  // Rebuilt on every start: the typed prompt, and so its keystrokes, depends on the language.
+  const buildEvents = () => {
     const ev = []
     const keys = (s, a, b) => [...s].forEach((ch, i) => ev.push({ t: a + (b - a) * (i + 1) / s.length, k: 'key', v: ch === ' ' ? 1 : 0 }))
-    keys(CMD1, .6, 2.9); ev.push({ t: 3.2, k: 'enter' })
+    keys(S('cmd'), .6, 2.9); ev.push({ t: 3.2, k: 'enter' })
     ev.push({ t: 5, k: 'error' })
     keys('/model', 48, 49); ev.push({ t: 50.6, k: 'key', v: 2 }); ev.push({ t: 51.8, k: 'enter' })
     ev.push({ t: 52.3, k: 'whoosh' }); ev.push({ t: 56.2, k: 'chime' })
@@ -433,7 +482,8 @@ li strong { color: var(--fg) }
       if (bar >= 1) for (let s = 0; s < 16; s++) ev.push({ t: t0 + s * .15, k: 'arp', v: tones[ARP[s % 8]] })
     }
     return ev.sort((a, b) => a.t - b.t)
-  })()
+  }
+  let EVENTS = []
 
   function env(g, T, peak, attack, decay) {
     g.gain.setValueAtTime(0, T); g.gain.linearRampToValueAtTime(peak, T + attack); g.gain.exponentialRampToValueAtTime(.0001, T + attack + decay)
@@ -455,9 +505,36 @@ li strong { color: var(--fg) }
     s.connect(f); f.connect(g); g.connect(dest); s.start(T, Math.random() * .5); s.stop(T + dur + .05)
     return f
   }
+  // Keyboard voices. Each keystroke = press + bottom-out (+ release), with random pitch and level
+  // so a run of keys never sounds like one sample on repeat. Big keys sit lower and carry stabilizer rattle.
+  const rnd = (x, spread) => x * (1 + (Math.random() - .5) * spread)
+  const KBD = {
+    thock(T, kind) {
+      const big = kind === 'space' || kind === 'enter', b = AU.bus
+      noise(T, .012, 'highpass', rnd(2400, .3), .7, rnd(.12, .4), b)                          // keycap tick
+      noise(T + .006, big ? .07 : .045, 'lowpass', rnd(big ? 650 : 950, .2), 1.4, rnd(big ? .9 : .7, .3), b) // bottom-out thock
+      const o = voice('sine', rnd(big ? 95 : 140, .15), T + .006, rnd(.28, .3), .001, big ? .09 : .05, b)
+      o.frequency.exponentialRampToValueAtTime(big ? 60 : 85, T + .07)                           // case resonance
+      noise(T + rnd(.085, .25), .015, 'bandpass', rnd(1800, .25), 2, rnd(.08, .4), b)          // release
+      if (big) noise(T + .02, .05, 'bandpass', 3200, 4, .07, b)                                 // stabilizer rattle
+    },
+    clicky(T, kind) {
+      const big = kind === 'space' || kind === 'enter', b = AU.bus
+      noise(T, .008, 'highpass', rnd(4200, .2), 1, rnd(.45, .3), b)                            // click jacket
+      noise(T + .009, .006, 'highpass', rnd(5200, .2), 1, rnd(.25, .3), b)                     // second click
+      noise(T + .012, big ? .05 : .03, 'bandpass', rnd(big ? 1100 : 1700, .2), 1, rnd(.4, .3), b) // bottom-out
+      voice('sine', rnd(big ? 150 : 210, .15), T + .012, .1, .001, .03, b)
+      noise(T + rnd(.08, .25), .01, 'highpass', 3600, 1, rnd(.12, .4), b)                       // release click
+    },
+    laptop(T, kind) {
+      const big = kind === 'space' || kind === 'enter', b = AU.bus
+      noise(T, big ? .035 : .022, 'bandpass', rnd(big ? 1300 : 1900, .25), 1.6, rnd(big ? .35 : .25, .4), b)
+      voice('sine', rnd(big ? 170 : 240, .15), T, .05, .001, .02, b)
+    },
+  }
   const PLAY = {
-    key: (T, v) => { noise(T, v === 1 ? .05 : .03, 'bandpass', v === 1 ? 1600 : 2600 + Math.random() * 1400, 1.2, .5, AU.bus); voice('sine', v === 1 ? 140 : 190, T, .12, .001, .03, AU.bus) },
-    enter: T => { noise(T, .07, 'bandpass', 1200, 1, .7, AU.bus); voice('sine', 110, T, .25, .001, .07, AU.bus) },
+    key: (T, v) => KBD[AU.kbd](T + (Math.random() - .5) * .016, v === 1 ? 'space' : v === 2 ? 'arrow' : 'key'),
+    enter: T => KBD[AU.kbd](T, 'enter'),
     error: T => { voice('sawtooth', 55, T, .35, .03, 2.2, AU.bus, 320); voice('sawtooth', 55.6, T, .3, .03, 2.2, AU.bus, 320); voice('sine', 41.2, T, .5, .03, 2.4, AU.bus) },
     whoosh: T => { const f = noise(T, 1.8, 'bandpass', 300, 2, .25, AU.bus); f.frequency.setValueAtTime(300, T); f.frequency.exponentialRampToValueAtTime(5000, T + 1.6) },
     chime: T => { voice('sine', 880, T, .16, .005, 1.4, AU.bus); voice('sine', 1318.5, T + .09, .12, .005, 1.4, AU.bus) },
@@ -486,6 +563,7 @@ li strong { color: var(--fg) }
     mg.setValueAtTime(fromT < 7 ? 0 : 1, c.currentTime)
     if (fromT < 8.2) mg.linearRampToValueAtTime(1, at(8.2))
     mg.setValueAtTime(1, at(D - 2.5)); mg.linearRampToValueAtTime(0, at(D))
+    EVENTS = buildEvents()
     AU.i = EVENTS.findIndex(e => e.t >= fromT); if (AU.i < 0) AU.i = EVENTS.length
     const pump = () => {
       const horizon = c.currentTime + .25
@@ -527,6 +605,14 @@ li strong { color: var(--fg) }
     $('mute').setAttribute('aria-pressed', String(AU.muted))
     if (AU.bus) AU.bus.gain.setTargetAtTime(AU.muted ? 0 : .8, AU.ctx.currentTime, .02)
   }
+  $('kbd').onchange = e => { AU.kbd = e.target.value }
+  function applyLang() {
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = STR[lang][el.dataset.i18n] })
+    document.querySelectorAll('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)))
+    stage.lang = lang
+    lastHist = ''; render(t); if (playing) audioStart(t)
+  }
+  document.querySelectorAll('[data-lang]').forEach(b => { b.onclick = () => { lang = b.dataset.lang; applyLang() } })
   SCENES.forEach(([name, at], i) => {
     const b = document.createElement('button')
     b.textContent = `${i + 1} · ${name}`
