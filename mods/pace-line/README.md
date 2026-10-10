@@ -109,4 +109,4 @@ pace-line is part of [claude.me](../../README.md).
 
 ## 📄 License
 
-[MIT](../../LICENSE)
+[MIT](../../LICENSE). See also the [privacy policy](PRIVACY.md) and [terms of service](TERMS.md).
