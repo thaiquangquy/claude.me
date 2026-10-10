@@ -4,6 +4,14 @@
 
 import type { Color, EffortRecord, GitInfo, Line, Segment } from '../types'
 
+export type Surface = 'terminal' | 'desktop'
+
+// The `surfaces` option: where the band draws. Unset or unknown means both.
+export function shownSurfaces(option: unknown): readonly Surface[] {
+  if (option === 'desktop' || option === 'terminal') return [option]
+  return ['terminal', 'desktop']
+}
+
 export type RateLimit = { kind: string; percentUsed: number; resetsAt?: string }
 
 export type LineInput = {
@@ -11,6 +19,8 @@ export type LineInput = {
   model: string
   // The last recorded effort; null before the first model request.
   effort: EffortRecord | null
+  // The `showModel` option: false leaves model (context) effort off line 1.
+  showModel?: boolean
   projectDir: string
   home: string
   // Context window: used percentage, window size, input tokens (null = unknown).
@@ -162,14 +172,18 @@ export function formatLines(input: LineInput): [Line, Line] {
   const filled = Math.min(10, Math.max(0, Math.trunc(pct / 10)))
   const bar = '█'.repeat(filled) + '░'.repeat(10 - filled)
 
-  // Pad the shorter left side so the | aligns on both lines.
+  // Pad the shorter left side so the | aligns on both lines; with the model
+  // column hidden, line 1 is the project alone and line 2 needs no padding.
+  const showModel = input.showModel !== false
   const left1 = `${model} ${ef}`
   const left2 = `${bar} ${pct}% ${cl}`
   const pad1 = ' '.repeat(Math.max(0, width(left2) - width(left1)))
-  const pad2 = ' '.repeat(Math.max(0, width(left1) - width(left2)))
+  const pad2 = showModel ? ' '.repeat(Math.max(0, width(left1) - width(left2))) : ''
   const sep: Segment[] = [{ text: ' ' }, { text: '|', dim: true }, { text: '  ' }]
 
-  const line1: Line = [{ text: left1, color: 'cyan' }, { text: pad1 }, ...sep, ...projectSegments(input)]
+  const line1: Line = showModel
+    ? [{ text: left1, color: 'cyan' }, { text: pad1 }, ...sep, ...projectSegments(input)]
+    : projectSegments(input)
 
   // Rate limits: real-time from the session; placeholders + cost when absent.
   const hasRateLimits = input.rateLimits.length > 0
@@ -182,7 +196,7 @@ export function formatLines(input: LineInput): [Line, Line] {
 
   const line2: Line = [
     { text: bar, color: levelColor(pct) },
-    { text: ` ${pct}% ${cl}` },
+    { text: showModel ? ` ${pct}% ${cl}` : ` ${pct}% ${cl}`.trimEnd() },
     { text: pad2 },
     ...sep,
     { text: '5h ' },

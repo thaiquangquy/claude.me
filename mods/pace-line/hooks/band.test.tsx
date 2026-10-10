@@ -141,3 +141,38 @@ test('band yields to a survey', async ($, on) => {
   expect(await ui.find({ type: 'Text', text: /myproj/ })).toBeUndefined()
   await ui.unmount()
 })
+
+test('surfaces: desktop hides the band in the terminal only', { options: { surfaces: 'desktop' } }, async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/work/myproj', surface: 'desktop', isInteractive: true })
+
+  expect(await modelSegment($, 'terminal')).toBeUndefined()
+  expect(await modelSegment($, 'desktop')).toBe('Opus 5.5 (200K) –')
+})
+
+test('surfaces: terminal hides the band on desktop only', { options: { surfaces: 'terminal' } }, async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+
+  expect(await modelSegment($, 'desktop')).toBeUndefined()
+  expect(await modelSegment($, 'terminal')).toBe('Opus 5.5 (200K) –')
+})
+
+test('surfaces: desktop skips the work in a terminal-only session', { options: { surfaces: 'desktop' } }, async ($, on) => {
+  const { calls } = engine(on, ['terminal'])
+  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+
+  expect(calls.git).toBe(0)
+})
+
+test('showModel: false draws line 1 without the model column', { options: { showModel: false } }, async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/work/myproj', surface: 'terminal', isInteractive: true })
+  await step($, 'medium')
+
+  expect(await modelSegment($, 'terminal')).toBeUndefined()
+  const ui = await $.ui.mount({ plugin: 'pace-line', surface: 'terminal', ...BAND })
+  expect(await ui.find({ type: 'Text', text: 'myproj (main)' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: '⇣15%' })).toBeDefined()
+  await ui.unmount()
+})

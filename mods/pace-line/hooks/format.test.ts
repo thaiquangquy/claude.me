@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'claude-code/testing'
 
-import { displayModel, effortLabel, formatLines, parseNumstat, toPlain } from './format'
+import { displayModel, effortLabel, formatLines, parseNumstat, shownSurfaces, toPlain } from './format'
 import type { LineInput } from './format'
 
 // Expected strings are statusline.sh's output for the same inputs, ANSI stripped,
@@ -149,7 +149,35 @@ describe('model and context label', () => {
   })
 })
 
+describe('showModel: false hides model, context window and effort', () => {
+  test('line 1 is the project alone and line 2 drops the padding', () => {
+    const lines = formatLines({
+      ...base,
+      showModel: false,
+      git: { branch: 'master', files: 2, added: 10, deleted: 3 },
+      rateLimits: [
+        { kind: 'five_hour', percentUsed: 35.4, resetsAt: inMinutes(150) },
+        { kind: 'seven_day', percentUsed: 80, resetsAt: inMinutes(2 * 1440) },
+      ],
+    })
+    expect(toPlain(lines)).toBe('myproj (master) 2f +10 -3\n████░░░░░░ 42% 200K |  5h 35% ⇣15% 2h  7d 80% ⇡9% 2d')
+    expect(lines[0].some(s => s.color === 'cyan')).toBe(false)
+  })
+
+  test('no trailing space before the | when the window is unknown', () => {
+    const lines = formatLines({ ...base, showModel: false, percent: 0, window: 0, tokens: null })
+    expect(toPlain(lines)).toBe('myproj\n░░░░░░░░░░ 0% |  5h --  7d --')
+  })
+})
+
 describe('helpers', () => {
+  test('shownSurfaces reads the surfaces option, defaulting to both', () => {
+    expect(shownSurfaces('desktop')).toEqual(['desktop'])
+    expect(shownSurfaces('terminal')).toEqual(['terminal'])
+    expect(shownSurfaces('both')).toEqual(['terminal', 'desktop'])
+    expect(shownSurfaces(undefined)).toEqual(['terminal', 'desktop'])
+  })
+
   test('parseNumstat skips binary files', () => {
     expect(parseNumstat('3\t1\ta.ts\n-\t-\timg.png\n7\t2\tb.ts\n')).toEqual({ files: 2, added: 10, deleted: 3 })
   })

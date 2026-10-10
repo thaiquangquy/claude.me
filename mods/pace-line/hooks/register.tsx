@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { GitInfo } from '../types'
-import { formatLines, parseNumstat } from './format'
+import { formatLines, parseNumstat, shownSurfaces } from './format'
 
 const effortAtom = atom({ plugin: 'pace-line', key: 'effort' } as const, null)
 const linesAtom = atom({ plugin: 'pace-line', key: 'lines' } as const, null)
@@ -11,6 +11,10 @@ const linesAtom = atom({ plugin: 'pace-line', key: 'lines' } as const, null)
 const REFRESH_MS = 15_000
 const GIT_TTL_MS = 5_000
 const EDITING_TOOLS = new Set(['Edit', 'Write', 'NotebookEdit', 'Bash'])
+
+// The options; a change in /config reloads the module with the new values.
+let shown = shownSurfaces(undefined)
+let showModel = true
 
 // Git info cache, keyed by directory. Module variables reset on hot reload.
 let gitDir = ''
@@ -33,8 +37,8 @@ async function git($: EngineInterface, dir: string, now: number): Promise<GitInf
 }
 
 async function refresh($: EngineInterface): Promise<void> {
-  // Skip the work (git included) while nothing draws, as in a -p run.
-  if ((await $.session.surfaces()).length === 0) return
+  // Skip the work (git included) while no surface that shows the band is attached.
+  if (!(await $.session.surfaces()).some(s => (shown as readonly string[]).includes(s))) return
 
   const [usage, model, effort, dir, acw, home, now] = await Promise.all([
     $.session.usage(),
@@ -48,6 +52,7 @@ async function refresh($: EngineInterface): Promise<void> {
   const lines = formatLines({
     model,
     effort,
+    showModel,
     projectDir: dir,
     home: home ?? '',
     percent: usage.context.percent ?? 0,
@@ -62,7 +67,10 @@ async function refresh($: EngineInterface): Promise<void> {
   await update($, linesAtom, () => lines)
 }
 
-export const register: Register = on => {
+export const register: Register = (on, options) => {
+  shown = shownSurfaces(options.surfaces)
+  showModel = options.showModel !== false
+
   // A client opening on a running session gets fresh lines at once.
   on('session.attach', async ($, e, next) => {
     const result = await next(e)
@@ -107,7 +115,7 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const lines = await read($, linesAtom)
-    if (lines === null || e.props.hasSurvey) {
+    if (!(shown as readonly string[]).includes(e.surface) || lines === null || e.props.hasSurvey) {
       return next(e)
     }
 
