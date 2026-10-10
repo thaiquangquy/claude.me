@@ -6,6 +6,7 @@ The pace-line promo video and the animatic it is rendered from.
 |---|---|
 | `prototype.html` | The animatic: timeline, captions (EN and VI), sound, 16:9 and 9:16 layouts. Open it in a browser to review. |
 | `render.mjs` | Renders `prototype.html` to MP4: seeks the page frame by frame and renders its Web Audio soundtrack offline. |
+| `post-vi.md` | Vietnamese social post to publish with the video. |
 | `out/` | Render output. Only the README poster is committed; MP4s are git-ignored and published as GitHub release assets. |
 
 ## Render
