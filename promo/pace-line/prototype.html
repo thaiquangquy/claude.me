@@ -73,8 +73,6 @@ select { font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel
 .menu div { padding: 6px 10px; border-radius: 5px; display: flex; justify-content: space-between }
 .menu div.on { background: rgba(217,119,87,.18); color: var(--clay) }
 .menu small { color: var(--mute); font-size: 14px }
-.pulse { animation: pulse 1s ease-in-out infinite }
-@keyframes pulse { 50% { opacity: .35 } }
 
 /* ---------- callouts (scene 4) ---------- */
 .call { position: absolute; font: 600 17px/1.2 var(--body); color: var(--fg); background: var(--clay); color: #1a0f0a; padding: 7px 11px; border-radius: 6px; white-space: nowrap }
@@ -103,6 +101,27 @@ select { font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel
 .formula em { color: var(--clay); font-style: normal }
 
 /* ---------- overlays ---------- */
+/* 9:16 cut: 720×1280 stage, captions lifted above the Shorts/Reels UI */
+.frame.portrait { aspect-ratio: 9 / 16; max-width: 420px }
+.stage.portrait { width: 720px; height: 1280px }
+.portrait .term { left: 30px; top: 290px; width: 660px; height: 620px; transform-origin: 3% 84% }
+.portrait .tbody { left: 22px; right: 22px; font-size: 17px }
+.portrait .band { font-size: 16px }
+.portrait .menu { left: 22px; width: 380px }
+.portrait .q { font-size: 56px; max-width: 13ch; text-wrap: balance; line-height: 1.1 }
+.portrait .big { font-size: 110px }
+.portrait .s3 { padding: 40px 36px; gap: 30px }
+.portrait .s3 h2 { font-size: 44px; text-wrap: balance; line-height: 1.1 }
+.portrait .verdict { font-size: 22px; line-height: 1.35 }
+.portrait .formula { font-size: 26px; line-height: 1.4 }
+.portrait .mark { font-size: 108px }
+.portrait .tagline { font-size: 30px; max-width: 18ch; text-wrap: balance; line-height: 1.25 }
+.portrait .cmd { font-size: 17px; max-width: 640px; line-height: 1.5 }
+.portrait .repo { font-size: 15px; max-width: 640px; line-height: 1.5 }
+.portrait .tag { left: 30px; top: 240px }
+.portrait .cap { bottom: 190px; padding: 0 40px; font-size: 40px; text-wrap: balance }
+.portrait #ffT { font-size: 64px }
+.portrait #ffB { font-size: 22px }
 .cap { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font: 700 34px/1.2 var(--display); text-shadow: 0 2px 16px rgba(0,0,0,.8); opacity: 0 }
 .tag { position: absolute; left: 140px; top: 24px; font: 600 15px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--clay); opacity: 0 }
 .ff { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 18px; padding: 28px 40px; border: 1px solid var(--line); border-radius: 14px; background: rgba(13,17,23,.72); box-shadow: 0 30px 80px rgba(0,0,0,.5); opacity: 0 }
@@ -138,7 +157,6 @@ td code, li code, p code { font-family: var(--mono); font-size: .92em; color: va
 .dir p { margin: 0; color: #c5cbd6; font-size: 14px }
 ol, ul { margin: 0; padding-left: 22px; display: grid; gap: 10px; max-width: 75ch; color: #c5cbd6 }
 li strong { color: var(--fg) }
-@media (prefers-reduced-motion: reduce) { .pulse { animation: none } }
 </style>
 
 <div class="wrap">
@@ -366,6 +384,8 @@ li strong { color: var(--fg) }
 
   const stage = $('stage'), frame = $('frame')
   const op = (id, v) => { $(id).style.opacity = v }
+  let portrait = false
+  const W = () => portrait ? 720 : 1280
   let lastBand = '', lastHist = ''
 
   function render(tr) {
@@ -403,6 +423,7 @@ li strong { color: var(--fg) }
     if (hist !== lastHist) { $('hist').innerHTML = `<div>${hist}</div>`; lastHist = hist }
     if (bandHTML !== lastBand) { $('band').innerHTML = bandHTML; lastBand = bandHTML }
     $('band').style.opacity = bandOp
+    $('band').querySelectorAll('.pulse').forEach(el => { el.style.opacity = .675 + .325 * Math.cos(2 * Math.PI * tr) })
     $('band').style.transform = `translateY(${(1 - bandOp) * 14}px)`
     $('typed').textContent = typed
     $('spin').textContent = spin
@@ -414,7 +435,7 @@ li strong { color: var(--fg) }
     document.querySelectorAll('#menu div').forEach(d => d.classList.toggle('on', +d.dataset.i === menu))
 
     // ---- scene 4: zoom onto the band, then callouts on the live band spans
-    const z = t >= 33 && t < 45 ? 1 + .75 * (seg(t, 35, 35.7) - seg(t, 44, 44.7)) : 1
+    const z = t >= 33 && t < 45 ? 1 + (portrait ? .22 : .75) * (seg(t, 35, 35.7) - seg(t, 44, 44.7)) : 1
     document.querySelector('.term').style.transform = `scale(${z})`
     // [id, appears at, host span, which part, above (-) or below (+) the band, stem length]
     const calls = [['c1', 36.2, 'b5', 0, -1, 62], ['c2', 37.8, 'b5', 1, -1, 112], ['c3', 39.4, 'b5', 2, 1, 26], ['c4', 41, 'b7', 0, 1, 78]]
@@ -425,7 +446,7 @@ li strong { color: var(--fg) }
       if (h && el.style.opacity > 0) {
         const spans = h.querySelectorAll('span')
         const target = idx === 0 ? spans[0] : idx === 1 ? (spans.length > 2 ? spans[1] : spans[0]) : spans[spans.length - 1]
-        const r = target.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / 1280
+        const r = target.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / W()
         el.classList.toggle('below', side > 0)
         el.style.setProperty('--stem', `${stem}px`)
         el.style.left = `${(r.left - s.left) / k + r.width / k / 2 - 19}px`
@@ -553,6 +574,17 @@ li strong { color: var(--fg) }
     arp: (T, f) => voice('triangle', f * 2, T, .06, .005, .16, AU.music),
   }
 
+  // Mix bus, music bus (fades in with scene 2, out over the end card), quieter thocky keys.
+  function buildGraph(c, base, fromT, level) {
+    AU.bus = c.createGain(); AU.bus.gain.value = level; AU.bus.connect(c.destination)
+    AU.music = c.createGain(); AU.music.connect(AU.bus)
+    AU.thock = c.createGain(); AU.thock.gain.value = .7; AU.thock.connect(AU.bus)  // thocky keys sit 30% under the rest
+    AU.base = base
+    const mg = AU.music.gain, at = s => Math.max(c.currentTime, base + s)
+    mg.setValueAtTime(fromT < 7 + OFF ? 0 : 1, c.currentTime)
+    if (fromT < 8.2 + OFF) mg.linearRampToValueAtTime(1, at(8.2 + OFF))
+    mg.setValueAtTime(1, at(D - 2.5)); mg.linearRampToValueAtTime(0, at(D))
+  }
   function audioStart(fromT) {
     try {
       if (!AU.ctx) {
@@ -564,15 +596,7 @@ li strong { color: var(--fg) }
     } catch { return }
     audioStop()
     const c = AU.ctx
-    AU.bus = c.createGain(); AU.bus.gain.value = AU.muted ? 0 : .8; AU.bus.connect(c.destination)
-    AU.music = c.createGain(); AU.music.connect(AU.bus)
-    AU.thock = c.createGain(); AU.thock.gain.value = .7; AU.thock.connect(AU.bus)  // thocky keys sit 30% under the rest
-    AU.base = c.currentTime + .05 - fromT
-    // Music fades in with scene 2 and out over the end card.
-    const mg = AU.music.gain, at = s => Math.max(c.currentTime, AU.base + s)
-    mg.setValueAtTime(fromT < 7 + OFF ? 0 : 1, c.currentTime)
-    if (fromT < 8.2 + OFF) mg.linearRampToValueAtTime(1, at(8.2 + OFF))
-    mg.setValueAtTime(1, at(D - 2.5)); mg.linearRampToValueAtTime(0, at(D))
+    buildGraph(c, c.currentTime + .05 - fromT, fromT, AU.muted ? 0 : .8)
     EVENTS = buildEvents()
     AU.i = EVENTS.findIndex(e => e.t >= fromT); if (AU.i < 0) AU.i = EVENTS.length
     const pump = () => {
@@ -589,7 +613,7 @@ li strong { color: var(--fg) }
   }
 
   // ---- scaling
-  const fit = () => { stage.style.transform = `scale(${frame.clientWidth / 1280})` }
+  const fit = () => { stage.style.transform = `scale(${frame.clientWidth / W()})` }
   new ResizeObserver(fit).observe(frame); fit()
 
   // ---- playback
@@ -630,6 +654,41 @@ li strong { color: var(--fg) }
     $('chips').appendChild(b)
   })
   document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); $('play').click() } })
+  // Frame-capture hooks used by render.mjs; harmless in the viewer.
+  window.__pace = {
+    duration: D,
+    setup({ lang: l = 'en', portrait: pt = false }) {
+      lang = l; portrait = pt
+      stage.classList.toggle('portrait', pt); frame.classList.toggle('portrait', pt)
+      fit(); applyLang()
+    },
+    seek(to) { t = to; render(t) },
+    // Renders the whole soundtrack offline and returns it as 16-bit stereo WAV, base64.
+    async audio(rate = 48000) {
+      const c = new OfflineAudioContext(2, Math.ceil(rate * D), rate)
+      const live = [AU.ctx, AU.noise]
+      AU.ctx = c
+      AU.noise = c.createBuffer(1, rate, rate)
+      const d = AU.noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
+      buildGraph(c, 0, 0, .8)
+      for (const e of buildEvents()) PLAY[e.k](e.t, e.v)
+      const buf = await c.startRendering()
+      ;[AU.ctx, AU.noise] = live
+      const n = buf.length, out = new DataView(new ArrayBuffer(44 + n * 4))
+      const str = (o, x) => [...x].forEach((ch, i) => out.setUint8(o + i, ch.charCodeAt(0)))
+      str(0, 'RIFF'); out.setUint32(4, 36 + n * 4, true); str(8, 'WAVEfmt '); out.setUint32(16, 16, true)
+      out.setUint16(20, 1, true); out.setUint16(22, 2, true); out.setUint32(24, rate, true); out.setUint32(28, rate * 4, true)
+      out.setUint16(32, 4, true); out.setUint16(34, 16, true); str(36, 'data'); out.setUint32(40, n * 4, true)
+      const L = buf.getChannelData(0), R = buf.getChannelData(1)
+      for (let i = 0; i < n; i++) {
+        out.setInt16(44 + i * 4, Math.max(-1, Math.min(1, L[i])) * 32767, true)
+        out.setInt16(46 + i * 4, Math.max(-1, Math.min(1, R[i])) * 32767, true)
+      }
+      let bin = ''; const u8 = new Uint8Array(out.buffer)
+      for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000))
+      return btoa(bin)
+    },
+  }
   document.fonts?.ready.then(() => render(t))
   render(t)
 })()

@@ -1,2 +1,5 @@
 tests/work/
 tests/fixtures/home/
+promo/pace-line/out/*.mp4
+promo/pace-line/out/*.wav
+promo/pace-line/out/poster-*-9x16.png
