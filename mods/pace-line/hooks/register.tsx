@@ -23,11 +23,14 @@ let gitInfo: GitInfo | null = null
 
 async function git($: EngineInterface, dir: string, now: number): Promise<GitInfo | null> {
   if (dir === gitDir && now - gitAt < GIT_TTL_MS) return gitInfo
-  const run = (args: string[]) => $.process.run(['git', '-C', dir, '--no-optional-locks', ...args])
-  const probe = await run(['rev-parse', '--git-dir'])
+  // Each command written out in full: the plugin directory reads them as fixed text.
+  const probe = await $.process.run(['git', '-C', dir, '--no-optional-locks', 'rev-parse', '--git-dir'])
   let info: GitInfo | null = null
   if (probe.exitCode === 0) {
-    const [branch, diff] = await Promise.all([run(['branch', '--show-current']), run(['diff', 'HEAD', '--numstat'])])
+    const [branch, diff] = await Promise.all([
+      $.process.run(['git', '-C', dir, '--no-optional-locks', 'branch', '--show-current']),
+      $.process.run(['git', '-C', dir, '--no-optional-locks', 'diff', 'HEAD', '--numstat']),
+    ])
     info = { branch: branch.stdout.trim(), ...parseNumstat(diff.stdout) }
   }
   gitDir = dir

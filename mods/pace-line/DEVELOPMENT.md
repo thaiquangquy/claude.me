@@ -59,7 +59,8 @@ Both are generated and ignored by `mods/pace-line/.gitignore`.
 
 | Path | Role |
 |---|---|
-| `.claude-plugin/plugin.json` | Manifest: name, version, `userConfig` options |
+| `.claude-plugin/plugin.json` | Manifest: name, version, license, icon, `userConfig` options |
+| `.claude-plugin/icon.png` | Listing icon for the plugin directory |
 | `hooks/hooks.json` | Points the engine at `register.tsx` |
 | `hooks/register.tsx` | Hooks: `session.start`, `session.attach`, `turn.step` (records effort), `tool.call` (refreshes git stats), `ui.render` for `AbovePrompt` (draws the band) |
 | `hooks/format.ts` | Pure formatting, ported from `statusline.sh`; no engine calls, so it is unit-tested directly |
@@ -70,8 +71,11 @@ Both are generated and ignored by `mods/pace-line/.gitignore`.
 The repo's `.claude-plugin/marketplace.json` lists the mod (`"source": "./mods/pace-line"`). To release:
 
 1. Bump `version` in `.claude-plugin/plugin.json`.
-2. Push to `master`.
-3. Users pick it up with `claude plugin update pace-line`.
+2. Run `claude plugin validate mods/pace-line` and `claude plugin test mods/pace-line`: no warnings, all tests pass.
+3. Push to `master`.
+4. Users pick it up with `claude plugin update pace-line`.
+
+For the plugin directory, the manifest carries `license` (MIT, text in the repo-root `LICENSE`) and `icon` (`.claude-plugin/icon.png`, 1024×1024). The icon becomes the listing icon only the first time the plugin is saved or submitted in the developer portal; changing the file later does not change the listing. The directory flags `"types"` as an unknown field; keep it, since `claude plugin validate` needs it to check the `$.state` keys against `types/index.d.ts`. Keep the README's "What it runs and sends" section in step with any new `$.process.run` command or data the mod reads.
 
 ## References
 

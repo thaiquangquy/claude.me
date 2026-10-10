@@ -1,15 +1,21 @@
 {
   "name": "pace-line",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Two-line status band for terminal and desktop: model, effort, context bar, git stats, and 5h/7d rate-limit pace",
   "author": { "name": "thaiquangquy" },
+  "license": "MIT",
+  "icon": "./.claude-plugin/icon.png",
   "types": "./types/index.d.ts",
   "userConfig": {
     "surfaces": {
       "type": "string",
       "title": "Show the band on",
       "description": "Where pace-line draws: both, desktop (the Code tab only), or terminal",
-      "options": ["both", "desktop", "terminal"],
+      "options": [
+        "both",
+        "desktop",
+        "terminal"
+      ],
       "default": "both"
     },
     "showModel": {
