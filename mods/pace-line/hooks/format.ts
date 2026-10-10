@@ -1,13 +1,16 @@
 // Port of statusline.sh's formatting. No `$` here so it can be unit-tested.
-// Model, context window and effort are left out: the Claude UI already shows them.
-// Line1: project (branch) Nf +A -D
+// Line1: model (ctx) effort | project (branch) Nf +A -D
 // Line2: bar PCT% CL | 5h used% [⇡⇣pace] countdown  7d used% [⇡⇣pace] countdown
 
-import type { Color, GitInfo, Line, Segment } from '../types'
+import type { Color, EffortRecord, GitInfo, Line, Segment } from '../types'
 
 export type RateLimit = { kind: string; percentUsed: number; resetsAt?: string }
 
 export type LineInput = {
+  // The session model as `$.session.model()` returns it (an id or an alias).
+  model: string
+  // The last recorded effort; null before the first model request.
+  effort: EffortRecord | null
   projectDir: string
   home: string
   // Context window: used percentage, window size, input tokens (null = unknown).
@@ -25,6 +28,31 @@ export type LineInput = {
 const FIVE_HOUR_MIN = 300
 const SEVEN_DAY_MIN = 10080
 
+// The model's display name with no context suffix: the label always comes from
+// the engine's measured window, never from the id, so the two cannot disagree.
+//   claude-opus-5-5[1m] -> Opus 5.5, claude-sonnet-5-5-20260901 -> Sonnet 5.5,
+//   opus[1m] -> Opus, Opus 5.5 (1M context) -> Opus 5.5
+export function displayModel(model: string): string {
+  const bare = model.replace(/\[1m\]$/i, '').replace(/\s*\([^)]*context\)$/i, '').trim()
+  const id = /^claude-([a-z]+)-(\d+)-(\d+)(?:-\d{8})?$/.exec(bare)
+  if (id?.[1]) return `${capitalize(id[1])} ${id[2]}.${id[3]}`
+  if (/^[a-z]+$/.test(bare)) return capitalize(bare)
+  return bare
+}
+
+function capitalize(s: string): string {
+  return `${s.charAt(0).toUpperCase()}${s.slice(1)}`
+}
+
+// The effort to show. The engine reports it only on model requests, so show it
+// only when it was recorded under the current session model; otherwise (no
+// request yet, model switched, model without effort) show a dash rather than
+// guess from settings.json, which the session may not be using.
+export function effortLabel(effort: EffortRecord | null, sessionModel: string): string {
+  if (effort === null || effort.sessionModel !== sessionModel || effort.level === null) return '–'
+  return String(effort.level)
+}
+
 export function contextLabel(ctx: number): string {
   if (ctx >= 1_000_000) return `${Math.trunc(ctx / 1_000_000)}M`
   if (ctx > 0) return `${Math.trunc(ctx / 1000)}K`
@@ -33,6 +61,10 @@ export function contextLabel(ctx: number): string {
 
 function truncate(s: string, max: number): string {
   return [...s].length > max ? `${[...s].slice(0, max).join('')}…` : s
+}
+
+function width(s: string): number {
+  return [...s].length
 }
 
 function levelColor(pct: number): Color {
@@ -119,12 +151,25 @@ export function formatLines(input: LineInput): [Line, Line] {
     ctx = acw
   }
   const cl = contextLabel(ctx)
+  const ef = effortLabel(input.effort, input.model)
+
+  // Model (context) effort, capped at 28 chars like statusline.sh.
+  let model = displayModel(input.model)
+  if (cl) model = `${model} (${cl})`
+  if (width(`${model} ${ef}`) > 28) model = `${[...model].slice(0, 28 - 2 - width(ef)).join('')}…`
 
   // Progress bar.
   const filled = Math.min(10, Math.max(0, Math.trunc(pct / 10)))
   const bar = '█'.repeat(filled) + '░'.repeat(10 - filled)
 
-  const line1: Line = projectSegments(input)
+  // Pad the shorter left side so the | aligns on both lines.
+  const left1 = `${model} ${ef}`
+  const left2 = `${bar} ${pct}% ${cl}`
+  const pad1 = ' '.repeat(Math.max(0, width(left2) - width(left1)))
+  const pad2 = ' '.repeat(Math.max(0, width(left1) - width(left2)))
+  const sep: Segment[] = [{ text: ' ' }, { text: '|', dim: true }, { text: '  ' }]
+
+  const line1: Line = [{ text: left1, color: 'cyan' }, { text: pad1 }, ...sep, ...projectSegments(input)]
 
   // Rate limits: real-time from the session; placeholders + cost when absent.
   const hasRateLimits = input.rateLimits.length > 0
@@ -137,10 +182,9 @@ export function formatLines(input: LineInput): [Line, Line] {
 
   const line2: Line = [
     { text: bar, color: levelColor(pct) },
-    { text: cl ? ` ${pct}% ${cl}` : ` ${pct}%` },
-    { text: ' ' },
-    { text: '|', dim: true },
-    { text: '  ' },
+    { text: ` ${pct}% ${cl}` },
+    { text: pad2 },
+    ...sep,
     { text: '5h ' },
     ...usageSegments(u5, rm5, FIVE_HOUR_MIN),
     { text: '  7d ' },

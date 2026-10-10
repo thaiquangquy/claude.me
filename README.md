@@ -47,15 +47,17 @@ To register the marketplace manually (if you manage `settings.json` separately),
 
 ## pace-line mod
 
-`mods/pace-line/` is a Claude Code mod (a plugin of function hooks) that draws the same info as `statusline.sh`, minus model/context window/effort (the Claude UI already shows those), as a band above the prompt in the **Claude desktop Code tab only**, with no `jq` or shell script needed. Terminal sessions draw nothing, since `statusline.sh` already covers them:
+`mods/pace-line/` is a Claude Code mod (a plugin of function hooks) that draws the same two lines as `statusline.sh` as a band above the prompt, in **both the terminal and the desktop Code tab**, with no `jq` or shell script needed:
 
 ```
-claude.me (master) 2f +10 -3
-████░░░░░░ 42% 200K |  5h 35% ⇣15% 2h  7d 80% ⇡9% 2d
+Opus 5.5 (1M) medium |  claude.me (master) 2f +10 -3
+████░░░░░░ 42% 1M    |  5h 35% ⇣15% 2h  7d 80% ⇡9% 2d
 ```
 
-- Line 1: project (branch), changed files `+added -deleted`
+- Line 1: model (context window), effort, project (branch), changed files `+added -deleted`
 - Line 2: context bar (green < 70% ≤ yellow < 90% ≤ red), 5-hour and 7-day usage, pace vs. an even burn (`⇡` over, `⇣` under), time to reset. Without rate-limit data it shows `--` and the session cost.
+
+Effort is the level the session's last model request actually carried. It shows `–` before the first request, after a `/model` switch, and for a model without effort; it is never guessed from `settings.json`.
 
 Install it from a terminal session:
 
@@ -63,7 +65,7 @@ Install it from a terminal session:
 /plugin install pace-line --marketplace thaiquangquy/claude.me
 ```
 
-Answer `y` to add the marketplace, then pick the user scope so it also loads in desktop sessions. Keep `statusline.sh` for the terminal; the two never show at the same time.
+Answer `y` to add the marketplace, then pick the user scope so it loads in every session. In the terminal it shows the same info as `statusline.sh`, so drop the `statusLine` block from `~/.claude/settings.json` if you don't want both.
 
 Develop it locally with `claude --plugin-dir mods/pace-line`; check it with `claude plugin validate mods/pace-line` and `claude plugin test mods/pace-line`.
 

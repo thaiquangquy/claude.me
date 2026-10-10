@@ -4,6 +4,7 @@ import type { EngineInterface, Register } from 'claude-code'
 import type { GitInfo } from '../types'
 import { formatLines, parseNumstat } from './format'
 
+const effortAtom = atom({ plugin: 'pace-line', key: 'effort' } as const, null)
 const linesAtom = atom({ plugin: 'pace-line', key: 'lines' } as const, null)
 
 // Countdowns move by the minute; git and context change between turns.
@@ -31,21 +32,22 @@ async function git($: EngineInterface, dir: string, now: number): Promise<GitInf
   return info
 }
 
-// The terminal has statusline.sh; the band is for the desktop Code tab only.
-const SURFACE = 'desktop'
-
 async function refresh($: EngineInterface): Promise<void> {
-  // Skip the work (git included) while no desktop client is attached.
-  if (!(await $.session.surfaces()).includes(SURFACE)) return
+  // Skip the work (git included) while nothing draws, as in a -p run.
+  if ((await $.session.surfaces()).length === 0) return
 
-  const [usage, dir, acw, home, now] = await Promise.all([
+  const [usage, model, effort, dir, acw, home, now] = await Promise.all([
     $.session.usage(),
+    $.session.model(),
+    read($, effortAtom),
     $.session.root(),
     $.env.get('CLAUDE_CODE_AUTO_COMPACT_WINDOW'),
     $.env.get('HOME'),
     $.clock.now(),
   ])
   const lines = formatLines({
+    model,
+    effort,
     projectDir: dir,
     home: home ?? '',
     percent: usage.context.percent ?? 0,
@@ -61,7 +63,7 @@ async function refresh($: EngineInterface): Promise<void> {
 }
 
 export const register: Register = on => {
-  // A desktop client opening on a running session gets fresh lines at once.
+  // A client opening on a running session gets fresh lines at once.
   on('session.attach', async ($, e, next) => {
     const result = await next(e)
     await refresh($)
@@ -77,9 +79,15 @@ export const register: Register = on => {
     return result
   })
 
-  // Each main-loop model response brings new context and rate-limit figures.
+  // Each main-loop request carries the effort the session really uses (absent
+  // for a model without effort), keyed by the session model so a /model switch
+  // clears it; its response brings new context and rate-limit figures.
   on('turn.step', async function* ($, e, next) {
     const isMain = e.agentId === undefined
+    if (isMain) {
+      const record = { sessionModel: await $.session.model(), level: e.effort ?? null }
+      await update($, effortAtom, () => record)
+    }
     const result = yield* next(e)
     if (isMain) await refresh($)
 
@@ -99,7 +107,7 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const lines = await read($, linesAtom)
-    if (e.surface !== SURFACE || lines === null || e.props.hasSurvey) {
+    if (lines === null || e.props.hasSurvey) {
       return next(e)
     }
 
