@@ -1,8 +1,12 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "thaiquangquy-skills",
-  "owner": { "name": "thaiquangquy" },
-  "metadata": { "description": "Personal Claude Code skills by thaiquangquy" },
+  "owner": {
+    "name": "thaiquangquy"
+  },
+  "metadata": {
+    "description": "Personal Claude Code skills by thaiquangquy"
+  },
   "plugins": [
     {
       "name": "personal-skills",
@@ -14,6 +18,36 @@
       "name": "pace-line",
       "source": "./mods/pace-line",
       "description": "Mod: two-line status band for terminal and desktop with model, effort, project/branch, git stats, context bar, and 5h/7d rate-limit pace",
+      "category": "productivity"
+    },
+    {
+      "name": "eli5",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/anthropics/claude-plugins-community.git",
+        "path": "eli5"
+      },
+      "description": "Explain any topic like I'm 5: a simple HTML picture explainer (upstream: anthropics/claude-plugins-community)",
+      "category": "learning"
+    },
+    {
+      "name": "html-plan",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/anthropics/claude-plugins-community.git",
+        "path": "html-plan"
+      },
+      "description": "Implementation plan as one interactive HTML page with mockups, diagrams and inline decisions (upstream: anthropics/claude-plugins-community)",
+      "category": "development"
+    },
+    {
+      "name": "next-steps",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/anthropics/claude-plugins-community.git",
+        "path": "next-steps"
+      },
+      "description": "Mod: suggests up to three next prompts above the input after each turn (upstream: anthropics/claude-plugins-community)",
       "category": "productivity"
     }
   ]

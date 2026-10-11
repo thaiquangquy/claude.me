@@ -60,6 +60,22 @@ Opus 5.5 (1M) medium |  claude.me (master) 2f +10 -3
 
 Options, updating and development: see the [pace-line README](mods/pace-line/README.md).
 
+## Third-party plugins
+
+The marketplace also lists three plugins from [anthropics/claude-plugins-community](https://github.com/anthropics/claude-plugins-community). No copy lives in this repo: each entry is a `git-subdir` source that points at the plugin's folder upstream, so installs and updates always come from upstream's default branch.
+
+| Plugin | Upstream folder |
+|---|---|
+| `eli5` | [`eli5/`](https://github.com/anthropics/claude-plugins-community/tree/main/eli5) |
+| `html-plan` | [`html-plan/`](https://github.com/anthropics/claude-plugins-community/tree/main/html-plan) |
+| `next-steps` | [`next-steps/`](https://github.com/anthropics/claude-plugins-community/tree/main/next-steps) |
+
+```
+/plugin install html-plan@thaiquangquy-skills
+```
+
+To pull the latest upstream version, run `claude plugin update <name>@thaiquangquy-skills`. To pin a plugin to one version, add `"ref": "<tag-or-branch>"` or `"sha": "<commit>"` to its `source` in `.claude-plugin/marketplace.json`.
+
 ## First-time setup (new machine)
 
 ```bash
