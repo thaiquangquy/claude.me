@@ -7,6 +7,12 @@ Opus 5.5 (1M) medium |  claude.me (master) 2f +10 -3
 ████░░░░░░ 42% 1M    |  5h 35% ⇣15% 2h  7d 80% ⇡9% 2d
 ```
 
+## 🎬 Video
+
+A one-minute tour: hit the limit without warning, see why usage % alone can't tell you if you'll make it, then catch the red pace early and finish on a lighter model.
+
+https://github.com/user-attachments/assets/75ae0bd5-e1e6-47fe-ada2-20dcd04103f9
+
 ## 🌟 Highlights
 
 - **Pace, not just usage**: the 5-hour and 7-day limits show how far ahead (`⇡`, red) or behind (`⇣`, green) an even burn you are, with the time to reset.

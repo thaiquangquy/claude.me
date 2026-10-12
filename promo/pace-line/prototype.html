@@ -1,0 +1,695 @@
+<title>pace-line Promo Animatic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one 16:9 stage (the video, played back from a deterministic timeline) above a storyboard you read top to bottom.
+   Single dark theme on purpose: it is a terminal video, and the review page matches it. */
+:root {
+  color-scheme: dark;
+  --ink: #0d1117;        /* stage ground */
+  --panel: #151b24;      /* terminal window */
+  --line: #283141;       /* hairlines */
+  --fg: #e6e9ef;
+  --mute: #8a94a6;
+  --clay: #d97757;       /* Claude Code accent */
+  --green: #5bd08a;
+  --red: #f06a6a;
+  --yellow: #e8c35a;
+  --cyan: #6fd3e4;
+  --page: #0a0d12;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { background: var(--page); color: var(--fg); font: 15px/1.6 var(--body); padding-inline: 16px; padding-block: 24px 64px }
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 40px }
+header { display: grid; gap: 6px }
+header .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--clay) }
+h1 { font: 800 clamp(28px, 5vw, 44px)/1.05 var(--display); margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--mute); max-width: 65ch }
+
+/* ---------- player ---------- */
+.player { display: grid; gap: 12px }
+.frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: var(--ink); border: 1px solid var(--line) }
+.stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; font-family: var(--mono); color: var(--fg); overflow: hidden;
+  background: radial-gradient(900px 500px at 70% 10%, #1a2232 0%, var(--ink) 60%) }
+.layer { position: absolute; inset: 0; opacity: 0 }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px }
+button { font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; cursor: pointer }
+button:hover { border-color: var(--mute) }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px }
+button[aria-pressed="true"] { border-color: var(--clay); color: var(--clay) }
+#play { min-width: 84px }
+#scrub { flex: 1 1 240px; min-width: 0; accent-color: var(--clay) }
+#clock { font: 500 13px/1 var(--mono); color: var(--mute); font-variant-numeric: tabular-nums }
+.seg { display: flex }
+.seg button { border-radius: 0 } .seg button:first-child { border-radius: 6px 0 0 6px } .seg button:last-child { border-radius: 0 6px 6px 0; margin-left: -1px }
+.kbd { display: flex; align-items: center; gap: 8px; font: 500 13px/1 var(--mono); color: var(--mute) }
+select { font: 500 13px/1 var(--mono); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; max-width: 100% }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chips button { padding: 7px 10px; font-size: 12px }
+
+/* ---------- terminal ---------- */
+.term { transform-origin: 18% 82%; position: absolute; left: 140px; top: 70px; width: 1000px; height: 520px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.45); overflow: hidden }
+.tbar { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid var(--line); color: var(--mute); font-size: 13px }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: #2c3442 }
+.tbar span:last-child { margin-left: 12px }
+.tbody { position: absolute; left: 28px; right: 28px; top: 62px; bottom: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 19px; line-height: 1.45 }
+.hist { display: flex; flex-direction: column; flex: 1; justify-content: flex-end; white-space: pre; line-height: 1.7 }
+.hist .u { color: var(--mute) }
+.hist .ok { color: var(--green) }
+.spin { color: var(--clay) }
+.err { border: 1px solid var(--red); color: var(--red); border-radius: 8px; padding: 10px 14px; background: rgba(240,106,106,.08) }
+.band { white-space: pre; font-size: 18px; line-height: 1.5; padding: 4px 0 }
+.c-cyan { color: var(--cyan) } .c-green { color: var(--green) } .c-red { color: var(--red) } .c-yellow { color: var(--yellow) } .dim { color: var(--mute) }
+.prompt { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; white-space: pre; min-height: 50px }
+.prompt .gt { color: var(--clay) }
+.caret { display: inline-block; width: 10px; height: 22px; background: var(--fg); vertical-align: -4px; margin-left: 1px }
+.menu { position: absolute; left: 28px; bottom: 92px; width: 420px; background: #1b2330; border: 1px solid var(--line); border-radius: 8px; padding: 8px; font-size: 17px }
+.menu div { padding: 6px 10px; border-radius: 5px; display: flex; justify-content: space-between }
+.menu div.on { background: rgba(217,119,87,.18); color: var(--clay) }
+.menu small { color: var(--mute); font-size: 14px }
+
+/* ---------- callouts (scene 4) ---------- */
+.call { position: absolute; font: 600 17px/1.2 var(--body); color: var(--fg); background: var(--clay); color: #1a0f0a; padding: 7px 11px; border-radius: 6px; white-space: nowrap }
+.call::after { content: ""; position: absolute; width: 2px; height: var(--stem, 26px); background: var(--clay); left: 18px; top: 100% }
+.call.below::after { top: auto; bottom: 100% }
+
+/* ---------- scene 2 ---------- */
+.s2 { display: grid; place-content: center; justify-items: center; gap: 18px; text-align: center }
+.big { font: 600 120px/1 var(--mono); letter-spacing: -.02em }
+.q { font: 800 64px/1 var(--display) }
+.sub { font: 400 26px/1.4 var(--body); color: var(--mute); max-width: 40ch; text-wrap: balance }
+
+/* ---------- scene 3 ---------- */
+.s3 { padding: 60px 110px; display: grid; align-content: center; gap: 34px }
+.s3 h2 { font: 800 50px/1 var(--display); margin: 0 }
+.row { display: grid; gap: 10px }
+.row .lbl { font: 500 18px/1 var(--body); color: var(--mute) }
+.track { position: relative; height: 46px; border: 1px solid var(--line); border-radius: 8px; background: #121822; overflow: visible }
+.fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--clay); border-radius: 7px 0 0 7px }
+.fill b { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font: 600 18px/1 var(--mono); color: #1a0f0a }
+.now { position: absolute; top: -10px; bottom: -10px; width: 0; border-left: 2px dashed var(--fg) }
+.now i { position: absolute; top: 50%; transform: translateY(-50%); left: 8px; background: var(--ink); padding: 3px 6px; border-radius: 4px; font: 500 14px/1 var(--mono); font-style: normal; color: var(--fg); white-space: nowrap }
+.ticks { display: flex; justify-content: space-between; font: 400 13px/1 var(--mono); color: var(--mute) }
+.verdict { font: 600 24px/1.2 var(--mono) }
+.formula { font: 600 30px/1 var(--mono); color: var(--fg); border-top: 1px solid var(--line); padding-top: 22px }
+.formula em { color: var(--clay); font-style: normal }
+
+/* ---------- overlays ---------- */
+/* 9:16 cut: 720×1280 stage, captions lifted above the Shorts/Reels UI */
+.frame.portrait { aspect-ratio: 9 / 16; max-width: 420px }
+.stage.portrait { width: 720px; height: 1280px }
+.portrait .term { left: 30px; top: 290px; width: 660px; height: 620px; transform-origin: 3% 84% }
+.portrait .tbody { left: 22px; right: 22px; font-size: 17px }
+.portrait .band { font-size: 16px }
+.portrait .menu { left: 22px; width: 380px }
+.portrait .q { font-size: 56px; max-width: 13ch; text-wrap: balance; line-height: 1.1 }
+.portrait .big { font-size: 110px }
+.portrait .s3 { padding: 40px 36px; gap: 30px }
+.portrait .s3 h2 { font-size: 44px; text-wrap: balance; line-height: 1.1 }
+.portrait .verdict { font-size: 22px; line-height: 1.35 }
+.portrait .formula { font-size: 26px; line-height: 1.4 }
+.portrait .mark { font-size: 108px }
+.portrait .tagline { font-size: 30px; max-width: 18ch; text-wrap: balance; line-height: 1.25 }
+.portrait .cmd { font-size: 17px; max-width: 640px; line-height: 1.5 }
+.portrait .repo { font-size: 15px; max-width: 640px; line-height: 1.5 }
+.portrait .tag { left: 30px; top: 240px }
+.portrait .cap { bottom: 190px; padding: 0 40px; font-size: 40px; text-wrap: balance }
+.portrait #ffT { font-size: 64px }
+.portrait #ffB { font-size: 22px }
+.cap { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font: 700 34px/1.2 var(--display); text-shadow: 0 2px 16px rgba(0,0,0,.8); opacity: 0 }
+.tag { position: absolute; left: 140px; top: 24px; font: 600 15px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--clay); opacity: 0 }
+.ff { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 18px; padding: 28px 40px; border: 1px solid var(--line); border-radius: 14px; background: rgba(13,17,23,.72); box-shadow: 0 30px 80px rgba(0,0,0,.5); opacity: 0 }
+#ffT { font: 700 76px/1 var(--mono); color: var(--fg); font-variant-numeric: tabular-nums; letter-spacing: -.02em }
+#ffB { font: 500 30px/1 var(--mono); white-space: pre; font-variant-numeric: tabular-nums }
+.end { display: grid; place-content: center; justify-items: center; gap: 22px; text-align: center }
+.mark { font: 800 120px/1 var(--display); letter-spacing: -.03em }
+.mark span { color: var(--clay) }
+.tagline { font: 500 32px/1 var(--body); color: var(--mute) }
+.cmd { font: 500 22px/1 var(--mono); border: 1px solid var(--line); background: var(--panel); padding: 16px 22px; border-radius: 8px }
+.cmd .gt { color: var(--clay) }
+.repo { font: 400 18px/1 var(--mono); color: var(--mute) }
+
+.poster { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10,13,18,.35); cursor: pointer; border: 0; border-radius: 0; padding: 0 }
+.poster span { font: 600 15px/1 var(--mono); background: var(--clay); color: #1a0f0a; padding: 14px 20px; border-radius: 999px }
+
+/* ---------- storyboard ---------- */
+section { display: grid; gap: 16px }
+h2.sec { font: 700 26px/1.15 var(--display); margin: 0 }
+section > p { margin: 0; max-width: 70ch; color: #c5cbd6 }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line) }
+th { font: 600 12px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); background: #10151d }
+tr:last-child td { border-bottom: 0 }
+td.t { font-family: var(--mono); color: var(--clay); white-space: nowrap; font-variant-numeric: tabular-nums }
+td code, li code, p code { font-family: var(--mono); font-size: .92em; color: var(--cyan) }
+.dirs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px }
+.dir { border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 8px; align-content: start }
+.dir.pick { border-color: var(--clay) }
+.dir h3 { margin: 0; font: 700 18px/1.2 var(--display) }
+.dir .pill { justify-self: start; font: 600 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #1a0f0a; background: var(--clay); padding: 5px 8px; border-radius: 4px }
+.dir p { margin: 0; color: #c5cbd6; font-size: 14px }
+ol, ul { margin: 0; padding-left: 22px; display: grid; gap: 10px; max-width: 75ch; color: #c5cbd6 }
+li strong { color: var(--fg) }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">pace-line · promo · animatic v5</div>
+    <h1>Hit the wall, or see it coming</h1>
+    <p>A 63-second rough cut with sound. Press play (sound needs a click to start), scrub, or jump to a scene, then read the storyboard and the open calls below.</p>
+  </header>
+
+  <div class="player">
+    <div class="frame" id="frame">
+      <div class="stage" id="stage">
+
+        <!-- Terminal (scenes 1, 4, 5) -->
+        <div class="layer" id="L-term">
+          <div class="term">
+            <div class="tbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>claude — ~/code/claude.me</span></div>
+            <div class="tbody">
+              <div class="hist" id="hist"></div>
+              <div class="spin" id="spin"></div>
+              <div class="err" id="err">⎿ You've hit your 5-hour limit · resets 3:00 PM</div>
+              <div class="band" id="band"></div>
+              <div class="prompt" id="prompt"><span class="gt">&gt; </span><span id="typed"></span><span class="caret" id="caret"></span></div>
+            </div>
+            <div class="menu" id="menu">
+              <div data-i="0"><span>Opus 5.5</span><small>most capable</small></div>
+              <div data-i="1"><span>Sonnet 5.5</span><small>lighter on usage</small></div>
+              <div data-i="2"><span>Haiku 5.5</span><small>fastest</small></div>
+            </div>
+          </div>
+          <div class="call" id="c1" data-i18n="c1">used</div>
+          <div class="call" id="c2" data-i18n="c2">pace vs. an even burn</div>
+          <div class="call" id="c3" data-i18n="c3">resets in</div>
+          <div class="call" id="c4" data-i18n="c4">same for the week</div>
+        </div>
+
+        <!-- Scene 2 -->
+        <div class="layer s2" id="L-s2">
+          <div class="big" id="s2a">5h 35%</div>
+          <div class="q" id="s2b" data-i18n="s2b">Good or bad?</div>
+          <div class="sub" id="s2c" data-i18n="s2c">A usage meter says what you spent. It can't say if you'll last until the reset.</div>
+        </div>
+
+        <!-- Scene 3 -->
+        <div class="layer s3" id="L-s3">
+          <h2 data-i18n="s3h">Same 35%. Two very different days.</h2>
+          <div class="row" id="rowA">
+            <div class="lbl" data-i18n="lblA">Session A · 1h into the 5h window</div>
+            <div class="track"><div class="fill" id="fA"><b>35%</b></div><div class="now" id="nA"><i data-i18n="nowA">now · 1h</i></div></div>
+            <div class="ticks"><span>0h</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span></div>
+            <div class="verdict c-red" id="vA" data-i18n="vA">⇡15% ahead of pace → limit in ~1h 50m, reset in 4h</div>
+          </div>
+          <div class="row" id="rowB">
+            <div class="lbl" data-i18n="lblB">Session B · 4h into the 5h window</div>
+            <div class="track"><div class="fill" id="fB"><b>35%</b></div><div class="now" id="nB"><i data-i18n="nowB">now · 4h</i></div></div>
+            <div class="ticks"><span>0h</span><span>1h</span><span>2h</span><span>3h</span><span>4h</span><span>5h</span></div>
+            <div class="verdict c-green" id="vB" data-i18n="vB">⇣45% behind pace → plenty left, keep going</div>
+          </div>
+          <div class="formula" id="form" data-i18n="form">pace = <em>used %</em> − <em>time elapsed %</em></div>
+        </div>
+
+        <!-- End card -->
+        <div class="layer end" id="L-end">
+          <div class="mark">pace<span>-</span>line</div>
+          <div class="tagline" data-i18n="tagline">Pace, not just usage.</div>
+          <div class="cmd"><span class="gt">&gt; </span>/plugin install pace-line --marketplace thaiquangquy/claude.me</div>
+          <div class="repo" data-i18n="repo">A Claude Code mod · github.com/thaiquangquy/claude.me</div>
+        </div>
+
+        <div class="tag" id="tag" data-i18n="tag">Take two · same session</div>
+        <div class="ff" id="ff"><div id="ffT">▸▸ +0h 00m</div><div id="ffB"></div></div>
+        <div class="cap" id="cap"></div>
+      </div>
+      <button class="poster" id="poster" aria-label="Play the animatic from the start"><span>▶ Play from start</span></button>
+    </div>
+
+    <div class="controls">
+      <button id="play" aria-label="Play or pause">▶ Play</button>
+      <input id="scrub" type="range" min="0" max="63" step="0.01" value="0" aria-label="Timeline">
+      <span id="clock">00.0 / 63.0s</span>
+      <button id="mute" aria-pressed="false" aria-label="Sound on or off">🔊 Sound on</button>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Language">
+        <button id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+        <button id="lang-vi" data-lang="vi" aria-pressed="false">VI · Tiếng Việt</button>
+      </div>
+      <label class="kbd" for="kbd">Keyboard
+        <select id="kbd">
+          <option value="thock">Mechanical · thocky (brown)</option>
+          <option value="clicky">Mechanical · clicky (blue)</option>
+          <option value="laptop">Laptop · soft scissor</option>
+        </select>
+      </label>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <section>
+    <h2 class="sec">Storyboard</h2>
+    <p>No voiceover. On-screen captions carry the story so it works muted in a feed. The VI toggle swaps every caption, label and the typed prompt to Vietnamese; Claude Code's own UI (the limit error, the model menu, tool output) stays English, as it is in the real product. Sound, all synthesized in the browser for now: keyboard sound on every keystroke (three switch styles to compare: thocky brown, clicky blue, soft laptop), a low detuned synth note on the limit error, then a 100 BPM minor-key synth bed (bass, arpeggio, soft kick) that enters with scene 2. A whoosh rides the fast-forward and a two-note chime lands on the green check.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Time</th><th>Scene</th><th>On screen</th><th>Caption</th><th>Phụ đề (VI)</th><th>Why it's there</th></tr></thead>
+        <tbody>
+          <tr><td class="t">0–7s</td><td>1 · The wall</td><td>Plain Claude Code, no band. Typing <code>refactor the auth module and add tests</code> (VI: <code>refactor module auth and write tests</code>), Enter, spinner, then the red limit message.</td><td>Mid-task. Zero warning.</td><td lang="vi">Đang làm dở. Không một lời cảnh báo.</td><td>The pain every Pro/Max user has felt. The hook lands in under 5s.</td></tr>
+          <tr><td class="t">7–17s</td><td>2 · The question</td><td>Huge <code>5h 35%</code>, then “Good or bad?”</td><td>A usage meter says what you spent. It can't say if you'll last until the reset.</td><td lang="vi">Có dính limit trước khi xong việc? Chỉ mỗi % đã sử dụng không trả lời được.</td><td>Names the gap: a % without time is a fuel gauge with no clock.</td></tr>
+          <tr><td class="t">17–33s</td><td>3 · Two stories</td><td>Two 5h tracks, both filled to 35%. The “now” marker sits at 1h vs 4h. Verdicts in red and green, then the formula.</td><td>(the scene is the caption)</td><td lang="vi">Cùng 35%. Hai ngày làm việc khác hẳn nhau.</td><td>The aha. Same number, opposite answers. Teaches the <code>⇡</code>/<code>⇣</code> math once so the band reads instantly later.</td></tr>
+          <tr><td class="t">33–45s</td><td>4 · Meet pace-line</td><td>Terminal again; the two-line band slides in above the prompt. Four callouts: used, pace, resets in, weekly.</td><td>pace-line: your pace, right above the prompt.</td><td lang="vi">pace-line: nhịp dùng quota, ngay trên ô prompt.</td><td>Product reveal, mapped onto what scene 3 just taught.</td></tr>
+          <tr><td class="t">45–58s</td><td>5 · Take two</td><td>Band pulses <code>⇡22%</code> red at 58%. Type <code>/model</code>, pick Sonnet 5.5. Terminal blurs; a centered <code>+1h 40m</code> fast-forward card shows the 5h pace sliding to <code>⇣3%</code> green. Blur clears on the green band. Then ✓ tests passing.</td><td>Take two. This time you see it coming. → Lighter model, slower burn. → Task done. Limit never hit.</td><td lang="vi">Lần này, bạn thấy trước. → Model nhẹ hơn. Hao quota chậm hơn. → Xong việc. Không chạm limit.</td><td>Mirrors the opening, so the payoff is the opening not happening.</td></tr>
+          <tr><td class="t">58–63s</td><td>6 · End card</td><td>Wordmark, tagline, install command, repo.</td><td>Pace, not just usage.</td><td lang="vi">Xem nhịp, không chỉ xem % sử dụng.</td><td>One action: copy the install line.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Where I changed your outline</h2>
+    <ol>
+      <li><strong>The ending is now a rewind, not a recovery.</strong> Your outline hits the limit, then switches model and continues. On Pro/Max the 5-hour limit is shared across models, so once you hit it, switching to Sonnet won't get you a green check, and a promo that implies it will draws “that's not how it works” comments. The honest and stronger story: scene 5 replays the same session with pace-line on, you see red <em>before</em> the wall, switch, and never hit it.</li>
+      <li><strong>Pace only recovers with time.</strong> Pace is used % minus elapsed %, and used never goes down. So the green check needs a visible time jump. The numbers in scene 5 are real: 58% used at 36% elapsed is <code>⇡22%</code>; after 1h 40m on Sonnet, 66% used at 69% elapsed is <code>⇣3%</code>.</li>
+      <li><strong>The body teaches with a contrast, not a definition.</strong> “Is 35% good?” has no answer until you add the clock. Two bars at the same 35% with different “now” markers make that click in one look; the formula comes after, as confirmation.</li>
+      <li><strong>The 7-day limit gets one callout, no more.</strong> It's the same mechanic, and a second story would push the cut past a minute.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="sec">Style direction</h2>
+    <div class="dirs">
+      <div class="dir pick"><span class="pill">Recommended · in the cut</span><h3>Terminal-native</h3><p>Real Claude Code UI, monospace, the band's own green/red/cyan. Kinetic type only between terminal scenes. Viewers recognize their own tool, so the problem reads as theirs. Cheapest to build and to keep accurate as the UI changes.</p></div>
+      <div class="dir"><h3>Trip computer</h3><p>Dashboard metaphor: fuel gauge (usage) vs. “range at current speed” (pace). Instantly clear to non-devs, but it takes the viewer out of the terminal and costs more in illustration.</p></div>
+      <div class="dir"><h3>Paceline</h3><p>Cycling: riders in a line, the leader burns out by going too hard. Fits the name, but it is a second idea viewers must decode in a 40s spot.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Decide before the final cut</h2>
+    <ol>
+      <li><strong>Format.</strong> I'd ship 16:9 as master and a 9:16 cut for Shorts/Reels/TikTok, with the terminal cropped to the band and prompt. (Default: both.)</li>
+      <li><strong>Length.</strong> 63s now, paced for reading. A 30s social cut drops scene 2 and the 7d callout. (Default: 63s master, 30s cut for Shorts.)</li>
+      <li><strong>Build tool.</strong> Remotion (React, renders MP4 from code, same timeline logic as this page) vs. hand-animating in an editor. (Default: Remotion, committed under <code>mods/pace-line/promo/</code>.)</li>
+      <li><strong>Vietnamese final.</strong> Captions in Vietnamese, with or without your voice reading them? (Default: captions only for the first cut; add your VO if the clip leads your channel.)</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(() => {
+  const OFF = 0            // extra seconds given to scene 1; later scenes are authored in story time = real − OFF
+  const D = 63
+  const SCENES = [
+    ['The wall', 0], ['The question', 7], ['Two stories', 17], ['Meet pace-line', 33], ['Take two', 45], ['End card', 58],
+  ]
+  const $ = id => document.getElementById(id)
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x))
+  const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
+  const seg = (t, a, b) => ease(clamp((t - a) / (b - a)))
+  const vis = (t, a, b, f = .35) => (t < a || t > b) ? 0 : Math.min(seg(t, a, a + f), 1 - seg(t, b - f, b))
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+
+  // Mirrors format.ts: level colors and pace segments.
+  const lvl = p => p >= 90 ? 'c-red' : p >= 70 ? 'c-yellow' : 'c-green'
+  const usage = (used, elapsedPct, rmLabel, pulse = false) => {
+    const d = used - elapsedPct
+    let s = `<span class="${lvl(used)}">${used}%</span>`
+    if (d > 0) s += ` <span class="c-red${pulse ? ' pulse' : ''}">⇡${d}%</span>`
+    if (d < 0) s += ` <span class="c-green">⇣${-d}%</span>`
+    return s + ` <span class="dim">${rmLabel}</span>`
+  }
+  const rm = m => m >= 1440 ? `${Math.trunc(m / 1440)}d` : m >= 60 ? `${Math.trunc(m / 60)}h` : `${m}m`
+  function band({ model, effort, ctx, u5, e5, m5, u7, e7, m7, pulse }) {
+    const left1 = `${model} (1M) ${effort}`
+    const filled = Math.trunc(ctx / 10)
+    const bar = '█'.repeat(filled) + '░'.repeat(10 - filled)
+    const left2 = `${bar} ${ctx}% 1M`
+    const w = Math.max(left1.length, left2.length)
+    const sep = ' <span class="dim">|</span>  '
+    const l1 = `<span class="c-cyan">${left1}</span>${' '.repeat(w - left1.length)}${sep}claude.me (main) 3f <span class="c-green">+42</span> <span class="c-red">-7</span>`
+    const five = usage(u5, e5, rm(m5), pulse)
+    const l2 = `<span class="${lvl(ctx)}">${bar}</span> ${ctx}% 1M${' '.repeat(w - left2.length)}${sep}<span id="b5">5h ${five}</span>  <span id="b7">7d ${usage(u7, e7, rm(m7))}</span>`
+    return l1 + '\n' + l2
+  }
+
+  // Claude Code's own UI (errors, menus, tool output) stays English as it is in the product;
+  // everything the video adds, and what the user types, follows the language.
+  const STR = {
+    en: {
+      cmd: 'refactor the auth module and add tests', plan: 'plan the auth refactor',
+      c1: 'used', c2: 'pace vs. an even burn', c3: 'resets in', c4: 'same for the week',
+      s2b: 'Good or bad?', s2c: "A usage meter says what you spent. It can't say if you'll last until the reset.",
+      s3h: 'Same 35%. Two very different days.',
+      lblA: 'Session A · 1h into the 5h window', lblB: 'Session B · 4h into the 5h window', nowA: 'now · 1h', nowB: 'now · 4h',
+      vA: '⇡15% ahead of pace → limit in ~1h 50m, reset in 4h', vB: '⇣45% behind pace → plenty left, keep going',
+      form: 'pace = <em>used %</em> − <em>time elapsed %</em>',
+      tagline: 'Pace, not just usage.', repo: 'A Claude Code mod · github.com/thaiquangquy/claude.me', tag: 'Take two · same session',
+      ff: 'on Sonnet 5.5 ·',
+      cap1: 'Mid-task. Zero warning.', cap2: 'pace-line: your pace, right above the prompt.', cap3: 'This time you see it coming.',
+      cap4: 'Lighter model. Slower burn.', cap5: 'Task done. Limit never hit.',
+    },
+    vi: {
+      cmd: 'refactor module auth and write tests', plan: 'lên kế hoạch refactor auth',
+      c1: 'đã dùng', c2: 'nhịp so với thời gian reset', c3: 'reset sau', c4: 'tương tự cho 7 ngày',
+      s2b: 'Có dính limit trước khi xong việc?', s2c: 'Chỉ mỗi % đã sử dụng không trả lời được.',
+      s3h: 'Cùng 35%. Hai ngày làm việc khác hẳn nhau.',
+      lblA: 'Phiên A · mới 1h trong khung 5h', lblB: 'Phiên B · đã 4h trong khung 5h', nowA: 'đang ở 1h', nowB: 'đang ở 4h',
+      vA: '⇡15% nhanh hơn nhịp → chạm limit sau ~1h 50m, reset sau 4h', vB: '⇣45% chậm hơn nhịp → còn dư nhiều, cứ làm tiếp',
+      form: 'pace = <em>% đã dùng</em> − <em>% thời gian đã qua</em>',
+      tagline: 'Xem nhịp, không chỉ xem % sử dụng.', repo: 'Một mod cho Claude Code · github.com/thaiquangquy/claude.me', tag: 'Làm lại · cùng phiên đó',
+      ff: 'với Sonnet 5.5 ·',
+      cap1: 'Đang làm dở. Không một lời cảnh báo.', cap2: 'pace-line: nhịp dùng quota, ngay trên ô prompt.', cap3: 'Lần này, bạn thấy trước.',
+      cap4: 'Model nhẹ hơn. Hao quota chậm hơn.', cap5: 'Xong việc. Không chạm limit.',
+    },
+  }
+  let lang = 'en'
+  const S = k => STR[lang][k]
+  const SPIN = ['✻', '✶', '✳', '✢']
+  // Human typing rhythm: uneven gaps, a longer beat after each word. Picture and keystroke sounds share it.
+  const keyTimes = (s, a, b) => {
+    const w = [...s].map((ch, i) => 1 + (ch === ' ' ? .9 : 0) + ((i * 37) % 11) / 11 * .7)
+    const total = w.reduce((x, y) => x + y, 0)
+    let acc = 0
+    return w.map(x => a + (b - a) * (acc += x) / total)
+  }
+  const typeOut = (s, t, a, b) => [...s].slice(0, keyTimes(s, a, b).filter(k => k <= t).length).join('')
+
+  const stage = $('stage'), frame = $('frame')
+  const op = (id, v) => { $(id).style.opacity = v }
+  let portrait = false
+  const W = () => portrait ? 720 : 1280
+  let lastBand = '', lastHist = ''
+
+  function render(tr) {
+    const t = tr - OFF
+    // ---- layers
+    op('L-term', Math.max(vis(tr, 0, 7 + OFF), vis(t, 33, 58)))
+    op('L-s2', vis(t, 7, 17))
+    op('L-s3', vis(t, 17, 33))
+    op('L-end', vis(t, 58, D + 1))
+
+    // ---- terminal content per scene
+    let hist = '', typed = '', spin = '', err = 0, bandHTML = '', bandOp = 0, menu = -1, caret = true
+    let u5 = 58, e5 = 36, m5 = 192
+    if (t < 7) {
+      if (tr < 3.2) typed = typeOut(S('cmd'), tr, .6, 2.9)
+      else hist = `<span class="u">&gt; ${S('cmd')}</span>`
+      if (tr >= 3.3 && tr < 5) spin = `${SPIN[Math.floor(tr * 8) % 4]} Refactoring… (${Math.floor((tr - 3.3) * 7 + 1)}s · ↓ 2.1k tokens)`
+      if (tr >= 5) hist += `\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
+      err = seg(tr, 5, 5.3)
+    } else if (t < 45) {
+      hist = `<span class="u">&gt; ${S('plan')}</span>\n<span class="ok">⏺</span> Plan ready: 4 steps, 6 files`
+      bandHTML = band({ model: 'Opus 5.5', effort: 'high', ctx: 42, u5: 35, e5: 20, m5: 240, u7: 61, e7: 57, m7: 4320 })
+      bandOp = seg(t, 34, 34.6)
+    } else {
+      hist = `<span class="u">&gt; ${S('cmd')}</span>\n<span class="ok">⏺</span> Updated src/auth/session.ts (+18 -6)`
+      let model = 'Opus 5.5', effort = 'high'
+      if (t >= 48 && t < 51.8) { typed = typeOut('/model', t, 48, 49); menu = t >= 49.2 ? (t >= 50.6 ? 1 : 0) : -1 }
+      if (t >= 51.8) { model = 'Sonnet 5.5'; effort = '–'; hist += `\n<span class="dim">⎿ Set model to Sonnet 5.5</span>` }
+      const p = seg(t, 52.8, 55.4)
+      u5 = Math.round(58 + 8 * p); e5 = Math.round(36 + 33 * p); m5 = Math.round(192 - 100 * p)
+      if (t >= 56.2) hist += `\n<span class="ok">✓ Auth refactor done · 14 tests passing</span>`
+      bandHTML = band({ model, effort, ctx: 64, u5, e5, m5, u7: 62, e7: 58, m7: 4250, pulse: t < 51.8 })
+      bandOp = 1
+    }
+    if (hist !== lastHist) { $('hist').innerHTML = `<div>${hist}</div>`; lastHist = hist }
+    if (bandHTML !== lastBand) { $('band').innerHTML = bandHTML; lastBand = bandHTML }
+    $('band').style.opacity = bandOp
+    $('band').querySelectorAll('.pulse').forEach(el => { el.style.opacity = .675 + .325 * Math.cos(2 * Math.PI * tr) })
+    $('band').style.transform = `translateY(${(1 - bandOp) * 14}px)`
+    $('typed').textContent = typed
+    $('spin').textContent = spin
+    $('spin').hidden = !spin
+    $('err').hidden = err === 0
+    $('err').style.opacity = err
+    $('caret').style.opacity = caret && (Math.floor(tr * 2.2) % 2 === 0 || typed) ? 1 : 0
+    $('menu').hidden = menu < 0
+    document.querySelectorAll('#menu div').forEach(d => d.classList.toggle('on', +d.dataset.i === menu))
+
+    // ---- scene 4: zoom onto the band, then callouts on the live band spans
+    const z = t >= 33 && t < 45 ? 1 + (portrait ? .22 : .75) * (seg(t, 35, 35.7) - seg(t, 44, 44.7)) : 1
+    document.querySelector('.term').style.transform = `scale(${z})`
+    // [id, appears at, host span, which part, above (-) or below (+) the band, stem length]
+    const calls = [['c1', 36.2, 'b5', 0, -1, 62], ['c2', 37.8, 'b5', 1, -1, 112], ['c3', 39.4, 'b5', 2, 1, 26], ['c4', 41, 'b7', 0, 1, 78]]
+    for (const [id, at, host, idx, side, stem] of calls) {
+      const el = $(id), o = Math.min(seg(t, at, at + .4), 1 - seg(t, 43.6, 44))
+      el.style.opacity = t >= 33 && t < 45 ? o : 0
+      const h = $(host)
+      if (h && el.style.opacity > 0) {
+        const spans = h.querySelectorAll('span')
+        const target = idx === 0 ? spans[0] : idx === 1 ? (spans.length > 2 ? spans[1] : spans[0]) : spans[spans.length - 1]
+        const r = target.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / W()
+        el.classList.toggle('below', side > 0)
+        el.style.setProperty('--stem', `${stem}px`)
+        el.style.left = `${(r.left - s.left) / k + r.width / k / 2 - 19}px`
+        el.style.top = side < 0 ? `${(r.top - s.top) / k - 34 - stem}px` : `${(r.bottom - s.top) / k + stem}px`
+      }
+    }
+
+    // ---- scene 2: three beats, each held long enough to read
+    op('s2a', seg(t, 7.4, 8)); op('s2b', seg(t, 9.4, 10)); op('s2c', seg(t, 11.6, 12.3))
+    $('s2a').style.transform = `scale(${1.08 - .08 * seg(t, 7.4, 8.4)})`
+
+    // ---- scene 3: build A, read it, build B, read it, then the formula
+    const g = seg(t, 18, 19.6)
+    $('fA').style.width = `${35 * g}%`; $('fB').style.width = `${35 * g}%`
+    $('nA').style.left = `${20 * seg(t, 19.8, 20.8)}%`; $('nB').style.left = `${80 * seg(t, 23.4, 24.6)}%`
+    op('nA', seg(t, 19.8, 20)); op('nB', seg(t, 23.4, 23.6))
+    op('vA', seg(t, 21, 21.5)); op('vB', seg(t, 25, 25.5)); op('form', seg(t, 28, 28.6))
+
+    // ---- scene 5: fast-forward card centered over a blurred terminal
+    const blur = vis(t, 52.2, 56, .4)
+    $('L-term').style.filter = blur ? `blur(${10 * blur}px) brightness(${1 - .45 * blur})` : ''
+    op('tag', vis(t, 45.1, 57.8))
+    op('ff', blur)
+    const ffMin = Math.round(100 * seg(t, 52.8, 55.4))
+    $('ffT').textContent = `▸▸ +${Math.floor(ffMin / 60)}h ${String(ffMin % 60).padStart(2, '0')}m`
+    $('ffB').innerHTML = `<span class="dim">${S('ff')}</span> 5h ${usage(u5, e5, rm(m5))}`
+    const caps = [
+      [5.4, 7, S('cap1')],
+      [34.2, 44.6, S('cap2')],
+      [45.3, 47.8, S('cap3')],
+      [52.4, 55.8, S('cap4')],
+      [56.4, 58, S('cap5')],
+    ]
+    const c = caps.find(([a, b]) => t >= a && t <= b)
+    $('cap').textContent = c ? c[2] : ''
+    $('cap').style.opacity = c ? vis(t, c[0], c[1], .25) : 0
+
+    // ---- controls
+    $('scrub').value = tr
+    $('clock').textContent = `${tr.toFixed(1).padStart(4, '0')} / ${D.toFixed(1)}s`
+    const cur = SCENES.reduce((i, s, j) => tr >= s[1] ? j : i, 0)
+    document.querySelectorAll('#chips button').forEach((b, j) => b.setAttribute('aria-pressed', String(j === cur)))
+  }
+
+  // ---- sound: synthesized with Web Audio, scheduled on the same timeline as the picture
+  const AU = { kbd: 'thock', ctx: null, bus: null, noise: null, muted: false, base: 0, i: 0, timer: 0 }
+  // Rebuilt on every start: the typed prompt, and so its keystrokes, depends on the language.
+  const buildEvents = () => {
+    const ev = []
+    const keys = (s, a, b) => { const ks = keyTimes(s, a, b); [...s].forEach((ch, i) => ev.push({ t: ks[i], k: 'key', v: ch === ' ' ? 1 : 0 })) }
+    keys(S('cmd'), .6, 2.9); ev.push({ t: 3.2, k: 'enter' })
+    ev.push({ t: 5, k: 'error' })
+    keys('/model', 48 + OFF, 49 + OFF); ev.push({ t: 50.6 + OFF, k: 'key', v: 2 }); ev.push({ t: 51.8 + OFF, k: 'enter' })
+    ev.push({ t: 52.3 + OFF, k: 'whoosh' }); ev.push({ t: 56.2 + OFF, k: 'chime' })
+    // Music: 100 BPM, Am F C G, enters with scene 2 and runs under the end card.
+    const BAR = 2.4, START = 7 + OFF
+    const CH = [[110, [220, 261.6, 329.6, 440]], [87.3, [174.6, 220, 261.6, 349.2]], [130.8, [261.6, 329.6, 392, 523.3]], [98, [196, 246.9, 293.7, 392]]]
+    const ARP = [0, 1, 2, 3, 2, 1, 2, 3]
+    for (let bar = 0; START + bar * BAR < D - .5; bar++) {
+      const t0 = START + bar * BAR, [root, tones] = CH[bar % 4]
+      for (let e = 0; e < 8; e++) ev.push({ t: t0 + e * .3, k: 'bass', v: root })
+      if (bar >= 2) for (let b = 0; b < 4; b++) { ev.push({ t: t0 + b * .6, k: 'kick' }); ev.push({ t: t0 + b * .6 + .3, k: 'hat' }) }
+      if (bar >= 1) for (let s = 0; s < 16; s++) ev.push({ t: t0 + s * .15, k: 'arp', v: tones[ARP[s % 8]] })
+    }
+    return ev.sort((a, b) => a.t - b.t)
+  }
+  let EVENTS = []
+
+  function env(g, T, peak, attack, decay) {
+    g.gain.setValueAtTime(0, T); g.gain.linearRampToValueAtTime(peak, T + attack); g.gain.exponentialRampToValueAtTime(.0001, T + attack + decay)
+  }
+  function voice(type, f, T, peak, attack, decay, dest, filter) {
+    const c = AU.ctx, o = c.createOscillator(), g = c.createGain()
+    o.type = type; o.frequency.setValueAtTime(f, T)
+    env(g, T, peak, attack, decay)
+    let n = o
+    if (filter) { const fl = c.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = filter; o.connect(fl); n = fl }
+    n.connect(g); g.connect(dest)
+    o.start(T); o.stop(T + attack + decay + .05)
+    return o
+  }
+  function noise(T, dur, type, freq, q, peak, dest) {
+    const c = AU.ctx, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain()
+    s.buffer = AU.noise; f.type = type; f.frequency.value = freq; f.Q.value = q
+    env(g, T, peak, .002, dur)
+    s.connect(f); f.connect(g); g.connect(dest); s.start(T, Math.random() * .5); s.stop(T + dur + .05)
+    return f
+  }
+  // Keyboard voices. Each keystroke = press + bottom-out (+ release), with random pitch and level
+  // so a run of keys never sounds like one sample on repeat. Big keys sit lower and carry stabilizer rattle.
+  const rnd = (x, spread) => x * (1 + (Math.random() - .5) * spread)
+  const KBD = {
+    thock(T, kind) {
+      const big = kind === 'space' || kind === 'enter', b = AU.thock
+      noise(T, .018, 'highpass', rnd(2000, .3), .7, rnd(.08, .4), b)                          // keycap tick
+      noise(T + .01, big ? .12 : .08, 'lowpass', rnd(big ? 520 : 760, .2), 1.4, rnd(big ? .85 : .65, .3), b) // bottom-out thock
+      const o = voice('sine', rnd(big ? 85 : 120, .15), T + .01, rnd(.3, .3), .003, big ? .16 : .1, b)
+      o.frequency.exponentialRampToValueAtTime(big ? 52 : 72, T + .12)                           // case resonance
+      noise(T + rnd(.15, .25), .025, 'bandpass', rnd(1500, .25), 2, rnd(.06, .4), b)           // release
+      if (big) noise(T + .03, .08, 'bandpass', 2800, 4, .05, b)                                 // stabilizer rattle
+    },
+    clicky(T, kind) {
+      const big = kind === 'space' || kind === 'enter', b = AU.bus
+      noise(T, .008, 'highpass', rnd(4200, .2), 1, rnd(.45, .3), b)                            // click jacket
+      noise(T + .009, .006, 'highpass', rnd(5200, .2), 1, rnd(.25, .3), b)                     // second click
+      noise(T + .012, big ? .05 : .03, 'bandpass', rnd(big ? 1100 : 1700, .2), 1, rnd(.4, .3), b) // bottom-out
+      voice('sine', rnd(big ? 150 : 210, .15), T + .012, .1, .001, .03, b)
+      noise(T + rnd(.08, .25), .01, 'highpass', 3600, 1, rnd(.12, .4), b)                       // release click
+    },
+    laptop(T, kind) {
+      const big = kind === 'space' || kind === 'enter', b = AU.bus
+      noise(T, big ? .035 : .022, 'bandpass', rnd(big ? 1300 : 1900, .25), 1.6, rnd(big ? .35 : .25, .4), b)
+      voice('sine', rnd(big ? 170 : 240, .15), T, .05, .001, .02, b)
+    },
+  }
+  const PLAY = {
+    key: (T, v) => KBD[AU.kbd](T + (Math.random() - .5) * .016, v === 1 ? 'space' : v === 2 ? 'arrow' : 'key'),
+    enter: T => KBD[AU.kbd](T, 'enter'),
+    error: T => { voice('sawtooth', 55, T, .35, .03, 2.2, AU.bus, 320); voice('sawtooth', 55.6, T, .3, .03, 2.2, AU.bus, 320); voice('sine', 41.2, T, .5, .03, 2.4, AU.bus) },
+    whoosh: T => { const f = noise(T, 1.8, 'bandpass', 300, 2, .25, AU.bus); f.frequency.setValueAtTime(300, T); f.frequency.exponentialRampToValueAtTime(5000, T + 1.6) },
+    chime: T => { voice('sine', 880, T, .16, .005, 1.4, AU.bus); voice('sine', 1318.5, T + .09, .12, .005, 1.4, AU.bus) },
+    kick: T => { const o = voice('sine', 120, T, .55, .002, .28, AU.music); o.frequency.exponentialRampToValueAtTime(45, T + .12) },
+    hat: T => noise(T, .04, 'highpass', 7500, .7, .12, AU.music),
+    bass: (T, f) => voice('sawtooth', f, T, .14, .01, .24, AU.music, 480),
+    arp: (T, f) => voice('triangle', f * 2, T, .06, .005, .16, AU.music),
+  }
+
+  // Mix bus, music bus (fades in with scene 2, out over the end card), quieter thocky keys.
+  function buildGraph(c, base, fromT, level) {
+    AU.bus = c.createGain(); AU.bus.gain.value = level; AU.bus.connect(c.destination)
+    AU.music = c.createGain(); AU.music.connect(AU.bus)
+    AU.thock = c.createGain(); AU.thock.gain.value = .7; AU.thock.connect(AU.bus)  // thocky keys sit 30% under the rest
+    AU.base = base
+    const mg = AU.music.gain, at = s => Math.max(c.currentTime, base + s)
+    mg.setValueAtTime(fromT < 7 + OFF ? 0 : 1, c.currentTime)
+    if (fromT < 8.2 + OFF) mg.linearRampToValueAtTime(1, at(8.2 + OFF))
+    mg.setValueAtTime(1, at(D - 2.5)); mg.linearRampToValueAtTime(0, at(D))
+  }
+  function audioStart(fromT) {
+    try {
+      if (!AU.ctx) {
+        AU.ctx = new (window.AudioContext || window.webkitAudioContext)()
+        AU.noise = AU.ctx.createBuffer(1, AU.ctx.sampleRate, AU.ctx.sampleRate)
+        const d = AU.noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
+      }
+      AU.ctx.resume()
+    } catch { return }
+    audioStop()
+    const c = AU.ctx
+    buildGraph(c, c.currentTime + .05 - fromT, fromT, AU.muted ? 0 : .8)
+    EVENTS = buildEvents()
+    AU.i = EVENTS.findIndex(e => e.t >= fromT); if (AU.i < 0) AU.i = EVENTS.length
+    const pump = () => {
+      const horizon = c.currentTime + .25
+      while (AU.i < EVENTS.length && AU.base + EVENTS[AU.i].t < horizon) {
+        const e = EVENTS[AU.i++]; PLAY[e.k](Math.max(c.currentTime, AU.base + e.t), e.v)
+      }
+    }
+    pump(); AU.timer = setInterval(pump, 60)
+  }
+  function audioStop() {
+    clearInterval(AU.timer)
+    if (AU.bus) { const b = AU.bus; b.gain.setTargetAtTime(0, AU.ctx.currentTime, .02); setTimeout(() => b.disconnect(), 150); AU.bus = null }
+  }
+
+  // ---- scaling
+  const fit = () => { stage.style.transform = `scale(${frame.clientWidth / W()})` }
+  new ResizeObserver(fit).observe(frame); fit()
+
+  // ---- playback
+  let t = 39.4 + OFF, playing = false, last = 0
+  const setPlaying = v => {
+    playing = v; $('play').textContent = v ? '❚❚ Pause' : '▶ Play'
+    if (v) { last = performance.now(); audioStart(t); requestAnimationFrame(tick) } else audioStop()
+  }
+  function tick(now) {
+    if (!playing) return
+    t += (now - last) / 1000; last = now
+    if (t >= D) { t = D; render(t); setPlaying(false); return }
+    render(t); requestAnimationFrame(tick)
+  }
+  const start = () => { $('poster').hidden = true; if (t >= D - .05) t = 0; setPlaying(true) }
+  const seek = to => { t = to; render(t); if (playing) audioStart(t) }
+  $('poster').onclick = () => { t = 0; start() }
+  $('play').onclick = () => { $('poster').hidden = true; playing ? setPlaying(false) : start() }
+  $('scrub').oninput = e => { $('poster').hidden = true; seek(+e.target.value) }
+  $('mute').onclick = () => {
+    AU.muted = !AU.muted
+    $('mute').textContent = AU.muted ? '🔇 Sound off' : '🔊 Sound on'
+    $('mute').setAttribute('aria-pressed', String(AU.muted))
+    if (AU.bus) AU.bus.gain.setTargetAtTime(AU.muted ? 0 : .8, AU.ctx.currentTime, .02)
+  }
+  $('kbd').onchange = e => { AU.kbd = e.target.value }
+  function applyLang() {
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = STR[lang][el.dataset.i18n] })
+    document.querySelectorAll('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)))
+    stage.lang = lang
+    lastHist = ''; render(t); if (playing) audioStart(t)
+  }
+  document.querySelectorAll('[data-lang]').forEach(b => { b.onclick = () => { lang = b.dataset.lang; applyLang() } })
+  SCENES.forEach(([name, at], i) => {
+    const b = document.createElement('button')
+    b.textContent = `${i + 1} · ${name}`
+    b.onclick = () => { $('poster').hidden = true; seek(at); if (!playing) setPlaying(true) }
+    $('chips').appendChild(b)
+  })
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); $('play').click() } })
+  // Frame-capture hooks used by render.mjs; harmless in the viewer.
+  window.__pace = {
+    duration: D,
+    setup({ lang: l = 'en', portrait: pt = false }) {
+      lang = l; portrait = pt
+      stage.classList.toggle('portrait', pt); frame.classList.toggle('portrait', pt)
+      fit(); applyLang()
+    },
+    seek(to) { t = to; render(t) },
+    // Renders the whole soundtrack offline and returns it as 16-bit stereo WAV, base64.
+    async audio(rate = 48000) {
+      const c = new OfflineAudioContext(2, Math.ceil(rate * D), rate)
+      const live = [AU.ctx, AU.noise]
+      AU.ctx = c
+      AU.noise = c.createBuffer(1, rate, rate)
+      const d = AU.noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
+      buildGraph(c, 0, 0, .8)
+      for (const e of buildEvents()) PLAY[e.k](e.t, e.v)
+      const buf = await c.startRendering()
+      ;[AU.ctx, AU.noise] = live
+      const n = buf.length, out = new DataView(new ArrayBuffer(44 + n * 4))
+      const str = (o, x) => [...x].forEach((ch, i) => out.setUint8(o + i, ch.charCodeAt(0)))
+      str(0, 'RIFF'); out.setUint32(4, 36 + n * 4, true); str(8, 'WAVEfmt '); out.setUint32(16, 16, true)
+      out.setUint16(20, 1, true); out.setUint16(22, 2, true); out.setUint32(24, rate, true); out.setUint32(28, rate * 4, true)
+      out.setUint16(32, 4, true); out.setUint16(34, 16, true); str(36, 'data'); out.setUint32(40, n * 4, true)
+      const L = buf.getChannelData(0), R = buf.getChannelData(1)
+      for (let i = 0; i < n; i++) {
+        out.setInt16(44 + i * 4, Math.max(-1, Math.min(1, L[i])) * 32767, true)
+        out.setInt16(46 + i * 4, Math.max(-1, Math.min(1, R[i])) * 32767, true)
+      }
+      let bin = ''; const u8 = new Uint8Array(out.buffer)
+      for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000))
+      return btoa(bin)
+    },
+  }
+  document.fonts?.ready.then(() => render(t))
+  render(t)
+})()
+</script>
