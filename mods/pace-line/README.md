@@ -9,11 +9,9 @@ Opus 5.5 (1M) medium |  claude.me (master) 2f +10 -3
 
 ## 🎬 Video
 
-A one-minute tour (Vietnamese captions): hit the limit without warning, see why usage % alone can't tell you if you'll make it, then catch the red pace early and finish on a lighter model.
+A one-minute tour: hit the limit without warning, see why usage % alone can't tell you if you'll make it, then catch the red pace early and finish on a lighter model.
 
-[![pace-line promo video](../../promo/pace-line/out/poster-vi-16x9.png)](https://github.com/thaiquangquy/claude.me/releases/download/pace-line-promo-vi-v1/pace-line-promo-vi-16x9.mp4)
-
-[▶ Watch 16:9](https://github.com/thaiquangquy/claude.me/releases/download/pace-line-promo-vi-v1/pace-line-promo-vi-16x9.mp4) · [▶ Watch 9:16 (Shorts, Reels, TikTok)](https://github.com/thaiquangquy/claude.me/releases/download/pace-line-promo-vi-v1/pace-line-promo-vi-9x16.mp4)
+https://github.com/user-attachments/assets/75ae0bd5-e1e6-47fe-ada2-20dcd04103f9
 
 ## 🌟 Highlights
 
