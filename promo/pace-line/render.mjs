@@ -1,6 +1,6 @@
 // Renders the promo to MP4 from prototype.html: every frame is a seek on the page's own timeline,
 // the soundtrack is the page's Web Audio graph rendered offline. What you reviewed is what ships.
-//   node render.mjs [--lang vi|en] [--format 16x9|9x16|both] [--fps 30]
+//   node render.mjs [--lang en|vi] [--format 16x9|9x16|both] [--fps 30]
 import { spawn, execSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { writeFileSync, mkdirSync, rmSync } from 'node:fs'
@@ -9,7 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d }
-const lang = arg('lang', 'vi'), fps = Number(arg('fps', 30)), which = arg('format', 'both')
+const lang = arg('lang', 'en'), fps = Number(arg('fps', 30)), which = arg('format', 'both')
 const require = createRequire(import.meta.url)
 const { chromium } = require(join(execSync('npm root -g').toString().trim(), 'playwright'))
 
@@ -54,7 +54,7 @@ for (const name of which === 'both' ? Object.keys(FORMATS) : [which]) {
     stdin.end()
   })
   rmSync(wav)
-  // Poster for the README: the scene 4 reveal, band zoomed with all four callouts.
+  // Poster frame: the scene 4 reveal, band zoomed with all four callouts. Handy as a thumbnail.
   await page.evaluate(() => window.__pace.seek(42.4))
   await page.screenshot({ path: join(outDir, `poster-${lang}-${name}.png`), clip: { x: 0, y: 0, width: f.w, height: f.h } })
   console.log(`wrote ${mp4}`)
