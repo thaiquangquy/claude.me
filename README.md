@@ -67,7 +67,7 @@ The marketplace also lists three plugins from [anthropics/claude-plugins-communi
 | Plugin | Upstream folder |
 |---|---|
 | `eli5` | [`eli5/`](https://github.com/anthropics/claude-plugins-community/tree/main/eli5) |
-| `html-plan` | [`html-plan/`](https://github.com/anthropics/claude-plugins-community/tree/main/html-plan) |
+| `html-plan` | [`html-plan/`](https://github.com/thaiquangquy/claude-plugins-community/tree/main/html-plan) |
 | `next-steps` | [`next-steps/`](https://github.com/anthropics/claude-plugins-community/tree/main/next-steps) |
 
 ```
