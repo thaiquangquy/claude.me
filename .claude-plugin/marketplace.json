@@ -34,10 +34,10 @@
       "name": "html-plan",
       "source": {
         "source": "git-subdir",
-        "url": "https://github.com/anthropics/claude-plugins-community.git",
+        "url": "https://github.com/thaiquangquy/claude-plugins-community.git",
         "path": "html-plan"
       },
-      "description": "Implementation plan as one interactive HTML page with mockups, diagrams and inline decisions (upstream: anthropics/claude-plugins-community)",
+      "description": "Implementation plan as one interactive HTML page with mockups, diagrams and inline decisions (fork of anthropics/claude-plugins-community with a dark-mode body color fix)",
       "category": "development"
     },
     {
