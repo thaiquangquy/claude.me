@@ -21,6 +21,7 @@ Portable Claude Code configuration — global CLAUDE.md, settings, statusline, a
 | `skills/pitch-doc/SKILL.md` | `~/.claude/skills/pitch-doc/SKILL.md` | `/pitch-doc` skill — packages a session's prototype/spec/notes into a demo-first doc for buy-in |
 | `skills/change-quiz/SKILL.md` | `~/.claude/skills/change-quiz/SKILL.md` | `/change-quiz` skill — HTML change report plus a self-graded quiz to verify understanding |
 | `skills/add-best-practice/SKILL.md` | `~/.claude/skills/add-best-practice/SKILL.md` | `/add-best-practice` skill — files a Java best practice noticed in any project into the `java-tutorial` repo's best_practices section and commits/pushes it there |
+| `skills/ambition-upgrade/SKILL.md` | `~/.claude/skills/ambition-upgrade/SKILL.md` | `/ambition-upgrade` skill — raises a task along altitude, depth and range axes and returns an ambition brief with a ready-to-run prompt |
 
 ## Marketplace
 

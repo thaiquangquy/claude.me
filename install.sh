@@ -22,6 +22,7 @@ declare -A FILES=(
   ["skills/pitch-doc/SKILL.md"]="skills/pitch-doc/SKILL.md"
   ["skills/change-quiz/SKILL.md"]="skills/change-quiz/SKILL.md"
   ["skills/add-best-practice/SKILL.md"]="skills/add-best-practice/SKILL.md"
+  ["skills/ambition-upgrade/SKILL.md"]="skills/ambition-upgrade/SKILL.md"
 )
 
 echo "==> Installing claude.me config from $REPO_DIR"
@@ -44,6 +45,7 @@ mkdir -p "$CLAUDE_DIR/skills/implementation-notes"
 mkdir -p "$CLAUDE_DIR/skills/pitch-doc"
 mkdir -p "$CLAUDE_DIR/skills/change-quiz"
 mkdir -p "$CLAUDE_DIR/skills/add-best-practice"
+mkdir -p "$CLAUDE_DIR/skills/ambition-upgrade"
 
 # Returns true if $1 is a symlink whose target lives inside $REPO_DIR
 _is_our_symlink() {
